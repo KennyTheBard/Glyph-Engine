@@ -1,1 +1,1 @@
-# moonshine-square-api
+# Moonshine Square API
