@@ -10,14 +10,14 @@ import (
 var router *gin.Engine
 
 func main() {
+	data.Init()
+
 	router = gin.Default()
 
 	v1 := router.Group("/api")
 	{
 		v1.GET("/", web.HandleGet)
 	}
-
-	data.Init()
 
 	router.Run()
 }
