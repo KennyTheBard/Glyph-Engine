@@ -16,7 +16,8 @@ func main() {
 
 	v1 := router.Group("/api")
 	{
-		v1.GET("/", web.HandleGet)
+		v1.GET("/", web.GetAllStories)
+		v1.GET("/:id", web.GetStory)
 	}
 
 	router.Run()
