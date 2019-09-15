@@ -10,11 +10,12 @@ import (
 )
 
 // CreateStory creates a story
-func CreateStory(c *gin.Context) {
-	story := model.Story{Title: c.PostForm("title"), Text: c.PostForm("text")}
+func CreateStory(context *gin.Context) {
+	var story model.Story
+	context.BindJSON(&story)
 	data.DB.Save(&story)
 
-	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Story created successfully!", "resourceId": story.ID})
+	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Story created successfully!", "resourceId": story.ID})
 }
 
 // GetAllStories retrieves all stories
@@ -42,20 +43,22 @@ func GetStory(context *gin.Context) {
 
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
+	var updatedStory model.Story
 	var story model.Story
-	id := context.Param("id")
+	context.BindJSON(&updatedStory)
 
+	id := context.Param("id")
 	data.DB.First(&story, id)
 
 	if story.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No story found!"})
 		return
 	}
 
-	data.DB.Model(&story).Update("title", context.PostForm("title"))
-	data.DB.Model(&story).Update("text", context.PostForm("text"))
+	data.DB.Model(&story).Update("title", updatedStory.Title)
+	data.DB.Model(&story).Update("text", updatedStory.Text)
 
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Todo updated successfully!"})
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }
 
 // DeleteStory removes a story
@@ -66,7 +69,7 @@ func DeleteStory(context *gin.Context) {
 	data.DB.First(&story, id)
 
 	if story.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No story found!"})
 		return
 	}
 
