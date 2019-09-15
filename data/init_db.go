@@ -17,4 +17,5 @@ func Init() {
 	}
 
 	DB.AutoMigrate(&model.Story{})
+	DB.AutoMigrate(&model.Choice{})
 }

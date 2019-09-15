@@ -14,13 +14,24 @@ func main() {
 
 	router = gin.Default()
 
-	v1 := router.Group("/api")
+	api := router.Group("/api")
 	{
-		v1.POST("/", web.CreateStory)
-		v1.GET("/", web.GetAllStories)
-		v1.GET("/:id", web.GetStory)
-		v1.PUT("/:id", web.UpdateStory)
-		v1.DELETE("/:id", web.DeleteStory)
+		storyEndpoint := api.Group("/story")
+		{
+			storyEndpoint.POST("/", web.CreateStory)
+			storyEndpoint.GET("/", web.GetAllStories)
+			storyEndpoint.GET("/:id", web.GetStory)
+			storyEndpoint.PUT("/:id", web.UpdateStory)
+			storyEndpoint.DELETE("/:id", web.DeleteStory)
+		}
+		choiceEndpoint := api.Group("/choice")
+		{
+			choiceEndpoint.POST("/", web.CreateChoice)
+			choiceEndpoint.GET("/", web.GetAllChoices)
+			choiceEndpoint.GET("/:id", web.GetChoice)
+			choiceEndpoint.PUT("/:id", web.UpdateChoice)
+			choiceEndpoint.DELETE("/:id", web.DeleteChoice)
+		}
 	}
 
 	router.Run()
