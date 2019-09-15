@@ -1,10 +1,12 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	asm "../assembler"
 	data "../data"
 	model "../model"
 )
@@ -25,7 +27,9 @@ func GetAllStories(context *gin.Context) {
 
 	var dtos []model.StoryDto
 	for _, item := range stories {
-		dtos = append(dtos, model.StoryDto{ID: item.ID, Title: item.Title, Text: item.Text})
+		fmt.Print(">>>>> ")
+		fmt.Println(item)
+		dtos = append(dtos, asm.StoryToDto(item))
 	}
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
 }
@@ -36,17 +40,22 @@ func GetStory(context *gin.Context) {
 	id := context.Param("id")
 	data.DB.First(&story, id)
 
-	dto := model.StoryDto{ID: story.ID, Title: story.Title, Text: story.Text}
+	fmt.Print(">>>>> ")
+	fmt.Println(story)
 
+	dto := asm.StoryToDto(story)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
 }
 
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
-	var updatedStory model.Story
-	var story model.Story
+	var updatedStory model.StoryDto
 	context.BindJSON(&updatedStory)
 
+	fmt.Print(">>>>> ")
+	fmt.Println(updatedStory)
+
+	var story model.Story
 	id := context.Param("id")
 	data.DB.First(&story, id)
 
@@ -55,8 +64,21 @@ func UpdateStory(context *gin.Context) {
 		return
 	}
 
+	var choices []model.Choice
+	for _, choiceID := range updatedStory.Choices {
+		var choice model.Choice
+		data.DB.First(&choice, choiceID)
+		fmt.Print(">>>>> ")
+		fmt.Println(choice)
+		choices = append(choices, choice)
+	}
+
 	data.DB.Model(&story).Update("title", updatedStory.Title)
 	data.DB.Model(&story).Update("text", updatedStory.Text)
+	data.DB.Model(&story).Update("choices", choices)
+
+	fmt.Print(">>>>> ")
+	fmt.Println(story)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }
