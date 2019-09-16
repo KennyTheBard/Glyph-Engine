@@ -11,8 +11,12 @@ import (
 
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
-	var choice model.Choice
-	context.BindJSON(&choice)
+	var dto model.ChoiceDto
+	context.BindJSON(&dto)
+
+	choice := model.Choice{
+		Title: dto.Title,
+		Text:  dto.Text}
 	data.DB.Save(&choice)
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Choice created successfully!", "resourceId": choice.ID})

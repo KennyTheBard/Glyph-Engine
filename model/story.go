@@ -7,9 +7,8 @@ import (
 // Story is the main element of a page
 type Story struct {
 	gorm.Model
-	Title   string   `json:"title"`
-	Text    string   `json:"text"`
-	Choices []Choice `json:"choices" gorm:"many2many:choices;"`
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }
 
 // StoryDto encapsulates fields that should be seen by others

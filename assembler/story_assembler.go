@@ -11,9 +11,6 @@ func StoryToDto(entity model.Story) model.StoryDto {
 	dto.ID = entity.ID
 	dto.Title = entity.Title
 	dto.Text = entity.Text
-	for _, choice := range entity.Choices {
-		dto.Choices = append(dto.Choices, choice.ID)
-	}
 
 	return dto
 }

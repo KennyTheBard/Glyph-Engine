@@ -7,15 +7,14 @@ import (
 // Choice is the main subelement of the page
 type Choice struct {
 	gorm.Model
-	Title   string  `json:"title"`
-	Text    string  `json:"text"`
-	Stories []Story `json:"stories" gorm:"many2many:stories;"`
+	Title    string `json:"title"`
+	Text     string `json:"text"`
+	ParentID uint   `json:"parent_id"`
 }
 
 // ChoiceDto encapsulates fields that should be seen by others
 type ChoiceDto struct {
-	ID      uint   `json:"id"`
-	Title   string `json:"title"`
-	Text    string `json:"text"`
-	Stories []uint `json:"stories"`
+	ID    uint   `json:"id"`
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }

@@ -13,9 +13,16 @@ import (
 
 // CreateStory creates a story
 func CreateStory(context *gin.Context) {
-	var story model.Story
-	context.BindJSON(&story)
+	var dto model.StoryDto
+	context.BindJSON(&dto)
+	story := model.Story{Title: dto.Title, Text: dto.Text}
 	data.DB.Save(&story)
+
+	for _, choiceID := range dto.Choices {
+		var choice model.Choice
+		data.DB.First(&choice, choiceID).Update("parent_id", story.ID)
+		data.DB.Save(&choice) // THIS WAS THE THINGY
+	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Story created successfully!", "resourceId": story.ID})
 }
@@ -27,8 +34,6 @@ func GetAllStories(context *gin.Context) {
 
 	var dtos []model.StoryDto
 	for _, item := range stories {
-		fmt.Print(">>>>> ")
-		fmt.Println(item)
 		dtos = append(dtos, asm.StoryToDto(item))
 	}
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
@@ -40,9 +45,6 @@ func GetStory(context *gin.Context) {
 	id := context.Param("id")
 	data.DB.First(&story, id)
 
-	fmt.Print(">>>>> ")
-	fmt.Println(story)
-
 	dto := asm.StoryToDto(story)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
 }
@@ -51,9 +53,6 @@ func GetStory(context *gin.Context) {
 func UpdateStory(context *gin.Context) {
 	var updatedStory model.StoryDto
 	context.BindJSON(&updatedStory)
-
-	fmt.Print(">>>>> ")
-	fmt.Println(updatedStory)
 
 	var story model.Story
 	id := context.Param("id")
@@ -68,17 +67,14 @@ func UpdateStory(context *gin.Context) {
 	for _, choiceID := range updatedStory.Choices {
 		var choice model.Choice
 		data.DB.First(&choice, choiceID)
-		fmt.Print(">>>>> ")
-		fmt.Println(choice)
 		choices = append(choices, choice)
 	}
+
+	fmt.Println(choices)
 
 	data.DB.Model(&story).Update("title", updatedStory.Title)
 	data.DB.Model(&story).Update("text", updatedStory.Text)
 	data.DB.Model(&story).Update("choices", choices)
-
-	fmt.Print(">>>>> ")
-	fmt.Println(story)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }

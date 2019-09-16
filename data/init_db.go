@@ -14,11 +14,14 @@ var DB *gorm.DB
 // Init prepares the link with the data source
 func Init() {
 	var err error
-	DB, err = gorm.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=moonshine_square password=postgres sslmode=disable")
+	DB, err = gorm.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=moonshine_square password=admin sslmode=disable")
 	if err != nil {
 		panic("failed to connect database")
 	}
 
+	DB.DropTableIfExists(&model.Story{})
 	DB.AutoMigrate(&model.Story{})
+
+	DB.DropTableIfExists(&model.Choice{})
 	DB.AutoMigrate(&model.Choice{})
 }
