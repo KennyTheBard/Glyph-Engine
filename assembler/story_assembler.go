@@ -16,10 +16,10 @@ func BuildStoryDto(entity model.Story) model.StoryDto {
 }
 
 // BuildStoriesDto applies BuildStoryDto on each element
-func BuildStoriesDto(entities []model.Story) model.StoryDto {
+func BuildStoriesDto(entities []model.Story) []model.StoryDto {
 	dtos := make([]model.StoryDto, len(entities))
 	for i, entity := range entities {
-		dtos[i] = BuildStory(entity)
+		dtos[i] = BuildStoryDto(entity)
 	}
 	return dtos
 }

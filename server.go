@@ -11,6 +11,7 @@ var router *gin.Engine
 
 func main() {
 	data.Init()
+	defer data.DB.Close()
 
 	router = gin.Default()
 

@@ -73,11 +73,10 @@ func DeleteStory(context *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	story, err := service.FindStoryById(uint(id))
+	err = service.DeleteStoryById(uint(id))
 	if err != nil {
 		panic(err)
 	}
 
-	data.DB.Delete(&story)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story deleted successfully!"})
 }

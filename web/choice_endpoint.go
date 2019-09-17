@@ -2,11 +2,14 @@ package web
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	asm "../assembler"
 	data "../data"
 	model "../model"
+	service "../service"
 )
 
 // CreateChoice creates a choice
@@ -14,69 +17,67 @@ func CreateChoice(context *gin.Context) {
 	var dto model.ChoiceDto
 	context.BindJSON(&dto)
 
-	choice := model.Choice{
-		Title: dto.Title,
-		Text:  dto.Text}
-	data.DB.Save(&choice)
+	choice, err := service.SaveChoice(asm.BuildChoice(dto))
+	if err != nil {
+		panic(err)
+	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Choice created successfully!", "resourceId": choice.ID})
 }
 
 // GetAllChoices retrieves all choices
 func GetAllChoices(context *gin.Context) {
-	var choices []model.Choice
-	data.DB.Find(&choices)
-
-	var dtos []model.ChoiceDto
-	for _, item := range choices {
-		dtos = append(dtos, model.ChoiceDto{ID: item.ID, Title: item.Title, Text: item.Text})
-	}
+	choices := service.FindAllChoices()
+	dtos := asm.BuildChoicesDto(choices)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
 }
 
 // GetChoice retrieves a choice
 func GetChoice(context *gin.Context) {
-	var choice model.Choice
-	id := context.Param("id")
-	data.DB.First(&choice, id)
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		panic(err)
+	}
+	choice, err := service.FindChoiceById(uint(id))
+	if err != nil {
+		panic(err)
+	}
 
-	dto := model.ChoiceDto{ID: choice.ID, Title: choice.Title, Text: choice.Text}
-
+	dto := asm.BuildChoiceDto(choice)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
 }
 
 // UpdateChoice updates a choice
 func UpdateChoice(context *gin.Context) {
-	var updatedChoice model.Choice
-	var choice model.Choice
-	context.BindJSON(&updatedChoice)
+	var dto model.ChoiceDto
+	context.BindJSON(&dto)
 
-	id := context.Param("id")
-	data.DB.First(&choice, id)
-
-	if choice.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No choice found!"})
-		return
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		panic(err)
+	}
+	choice, err := service.FindChoiceById(uint(id))
+	if err != nil {
+		panic(err)
 	}
 
-	data.DB.Model(&choice).Update("title", updatedChoice.Title)
-	data.DB.Model(&choice).Update("text", updatedChoice.Text)
+	data.DB.Model(&choice).Update("title", dto.Title)
+	data.DB.Model(&choice).Update("text", dto.Text)
+	data.DB.Model(&choice).Update("parent_story", dto.ParentStory)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice updated successfully!"})
 }
 
 // DeleteChoice removes a choice
 func DeleteChoice(context *gin.Context) {
-	var choice model.Choice
-	id := context.Param("id")
-
-	data.DB.First(&choice, id)
-
-	if choice.ID == 0 {
-		context.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No choice found!"})
-		return
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		panic(err)
+	}
+	err = service.DeleteChoiceById(uint(id))
+	if err != nil {
+		panic(err)
 	}
 
-	data.DB.Delete(&choice)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice deleted successfully!"})
 }
