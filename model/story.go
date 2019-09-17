@@ -17,3 +17,11 @@ type StoryDto struct {
 	Title string `json:"title"`
 	Text  string `json:"text"`
 }
+
+// StoryCompleteDto encapsulates fields that should be seen by others + the available choices
+type StoryCompleteDto struct {
+	ID      uint              `json:"id"`
+	Title   string            `json:"title"`
+	Text    string            `json:"text"`
+	Choices []OrphanChoiceDto `json:"choices"`
+}

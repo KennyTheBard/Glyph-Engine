@@ -51,7 +51,8 @@ func GetStory(context *gin.Context) {
 		return
 	}
 
-	dto := asm.BuildStoryDto(story)
+	choices := service.FindChoicesByParent(story.ID)
+	dto := asm.BuildCompleteStoryDto(story, choices)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
 }
 

@@ -16,6 +16,17 @@ func BuildChoiceDto(entity model.Choice) model.ChoiceDto {
 	return dto
 }
 
+// BuildOrphanChoiceDto converts an entity to a DTO
+func BuildOrphanChoiceDto(entity model.Choice) model.OrphanChoiceDto {
+	var dto model.OrphanChoiceDto
+
+	dto.ID = entity.ID
+	dto.Title = entity.Title
+	dto.Text = entity.Text
+
+	return dto
+}
+
 // BuildChoiceDto applies BuildChoiceDto on each element
 func BuildChoicesDto(entities []model.Choice) []model.ChoiceDto {
 	dtos := make([]model.ChoiceDto, len(entities))

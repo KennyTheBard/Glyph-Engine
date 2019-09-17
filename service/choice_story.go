@@ -21,6 +21,12 @@ func FindChoiceById(id uint) (model.Choice, error) {
 	return choice, nil
 }
 
+func FindChoicesByParent(id uint) []model.Choice {
+	var choices []model.Choice
+	data.DB.Where("parent_story = ?", id).Find(&choices)
+	return choices
+}
+
 func FindAllChoices() []model.Choice {
 	var choices []model.Choice
 	data.DB.Find(&choices)
