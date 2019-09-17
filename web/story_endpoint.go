@@ -15,11 +15,16 @@ import (
 // CreateStory creates a story
 func CreateStory(context *gin.Context) {
 	var dto model.StoryDto
-	context.BindJSON(&dto)
+
+	if err := context.BindJSON(&dto); err != nil {
+		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
 
 	story, err := service.SaveStory(asm.BuildStory(dto))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusInternalServerError, "Failed to create new story!")
+		return
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Story created successfully!", "resourceId": story.ID})
@@ -36,11 +41,14 @@ func GetAllStories(context *gin.Context) {
 func GetStory(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
+
 	story, err := service.FindStoryById(uint(id))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
 	}
 
 	dto := asm.BuildStoryDto(story)
@@ -50,15 +58,21 @@ func GetStory(context *gin.Context) {
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
 	var dto model.StoryDto
-	context.BindJSON(&dto)
+	if err := context.BindJSON(&dto); err != nil {
+		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
 
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
+
 	story, err := service.FindStoryById(uint(id))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
 	}
 
 	data.DB.Model(&story).Update("title", dto.Title)
@@ -71,12 +85,15 @@ func UpdateStory(context *gin.Context) {
 func DeleteStory(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
-	}
-	err = service.DeleteStoryById(uint(id))
-	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story deleted successfully!"})
+	err = service.DeleteStoryById(uint(id))
+	if err != nil {
+		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
+	}
+
+	StatusResponse(context, http.StatusOK, "Story deleted successfully!")
 }

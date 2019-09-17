@@ -15,11 +15,15 @@ import (
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
 	var dto model.ChoiceDto
-	context.BindJSON(&dto)
+	if err := context.BindJSON(&dto); err != nil {
+		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
 
 	choice, err := service.SaveChoice(asm.BuildChoice(dto))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
+		return
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Choice created successfully!", "resourceId": choice.ID})
@@ -36,11 +40,14 @@ func GetAllChoices(context *gin.Context) {
 func GetChoice(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
+
 	choice, err := service.FindChoiceById(uint(id))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		return
 	}
 
 	dto := asm.BuildChoiceDto(choice)
@@ -50,15 +57,20 @@ func GetChoice(context *gin.Context) {
 // UpdateChoice updates a choice
 func UpdateChoice(context *gin.Context) {
 	var dto model.ChoiceDto
-	context.BindJSON(&dto)
+	if err := context.BindJSON(&dto); err != nil {
+		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
 
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
 	choice, err := service.FindChoiceById(uint(id))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		return
 	}
 
 	data.DB.Model(&choice).Update("title", dto.Title)
@@ -72,11 +84,13 @@ func UpdateChoice(context *gin.Context) {
 func DeleteChoice(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
 	}
 	err = service.DeleteChoiceById(uint(id))
 	if err != nil {
-		panic(err)
+		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice deleted successfully!"})
