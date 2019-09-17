@@ -25,3 +25,7 @@ func Init() {
 	DB.DropTableIfExists(&model.Choice{})
 	DB.AutoMigrate(&model.Choice{})
 }
+
+func Close() {
+	DB.Close()
+}
