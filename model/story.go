@@ -13,8 +13,7 @@ type Story struct {
 
 // StoryDto encapsulates fields that should be seen by others
 type StoryDto struct {
-	ID      uint   `json:"id"`
-	Title   string `json:"title"`
-	Text    string `json:"text"`
-	Choices []uint `json:"choices"`
+	ID    uint   `json:"id"`
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }
