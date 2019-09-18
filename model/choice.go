@@ -10,6 +10,7 @@ type Choice struct {
 	Title       string `json:"title"`
 	Text        string `json:"text"`
 	ParentStory uint   `json:"parent_story"`
+	NextStory   uint   `json:"next_story"`
 }
 
 // ChoiceDto encapsulates fields that should be seen by others + the parent
@@ -18,11 +19,13 @@ type ChoiceDto struct {
 	Title       string `json:"title"`
 	Text        string `json:"text"`
 	ParentStory uint   `json:"parent_story"`
+	NextStory   uint   `json:"next_story"`
 }
 
 // OrphanChoiceDto encapsulates fields that should be seen by others
 type OrphanChoiceDto struct {
-	ID    uint   `json:"id"`
-	Title string `json:"title"`
-	Text  string `json:"text"`
+	ID        uint   `json:"id"`
+	Title     string `json:"title"`
+	Text      string `json:"text"`
+	NextStory uint   `json:"next_story"`
 }

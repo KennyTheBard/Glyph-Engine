@@ -76,6 +76,7 @@ func UpdateChoice(context *gin.Context) {
 	data.DB.Model(&choice).Update("title", dto.Title)
 	data.DB.Model(&choice).Update("text", dto.Text)
 	data.DB.Model(&choice).Update("parent_story", dto.ParentStory)
+	data.DB.Model(&choice).Update("next_story", dto.NextStory)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice updated successfully!"})
 }

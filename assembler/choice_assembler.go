@@ -12,6 +12,7 @@ func BuildChoiceDto(entity model.Choice) model.ChoiceDto {
 	dto.Title = entity.Title
 	dto.Text = entity.Text
 	dto.ParentStory = entity.ParentStory
+	dto.NextStory = entity.NextStory
 
 	return dto
 }
@@ -23,6 +24,7 @@ func BuildOrphanChoiceDto(entity model.Choice) model.OrphanChoiceDto {
 	dto.ID = entity.ID
 	dto.Title = entity.Title
 	dto.Text = entity.Text
+	dto.NextStory = entity.NextStory
 
 	return dto
 }
@@ -43,6 +45,7 @@ func BuildChoice(dto model.ChoiceDto) model.Choice {
 	entity.Title = dto.Title
 	entity.Text = dto.Text
 	entity.ParentStory = dto.ParentStory
+	entity.NextStory = dto.NextStory
 
 	return entity
 }
