@@ -18,6 +18,10 @@ func FindStoryById(id uint) (model.Story, error) {
 	if story.ID != id {
 		return story, errors.New("No story found with the given ID")
 	}
+
+	var choices []model.Choice
+	data.DB.Model(&story).Related(&choices, "ParentStoryRefer")
+	story.Choices = choices
 	return story, nil
 }
 
@@ -33,6 +37,7 @@ func DeleteStoryById(id uint) error {
 	if story.ID != id {
 		return errors.New("No story found with the given ID")
 	}
+
 	data.DB.Delete(&story)
 	return nil
 }

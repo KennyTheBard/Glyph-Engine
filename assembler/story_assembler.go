@@ -16,14 +16,14 @@ func BuildStoryDto(entity model.Story) model.StoryDto {
 }
 
 // BuildCompleteStoryDto converts an entity to a DTO
-func BuildCompleteStoryDto(entity model.Story, choices []model.Choice) model.StoryCompleteDto {
+func BuildCompleteStoryDto(entity model.Story) model.StoryCompleteDto {
 	var dto model.StoryCompleteDto
 
 	dto.ID = entity.ID
 	dto.Title = entity.Title
 	dto.Text = entity.Text
-	dto.Choices = make([]model.OrphanChoiceDto, len(choices))
-	for i, choice := range choices {
+	dto.Choices = make([]model.OrphanChoiceDto, len(entity.Choices))
+	for i, choice := range entity.Choices {
 		dto.Choices[i] = BuildOrphanChoiceDto(choice)
 	}
 

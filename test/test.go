@@ -9,7 +9,7 @@ import (
 
 type MasterModel struct {
 	ID     uint
-	Slaves []SlaveModel `gorm:"one2many:MasterRefer;association_foreignkey:ID"`
+	Slaves []SlaveModel `gorm:"one2many:MasterRefer"`
 }
 
 type SlaveModel struct {
@@ -39,12 +39,12 @@ func main() {
 	slave := SlaveModel{MasterRefer: master.ID}
 	db.Save(&slave)
 
-	{
-		var slaves []SlaveModel
-		slaves = append(slaves, slave)
-		master.Slaves = slaves
-		db.Save(&master)
-	}
+	// {
+	// 	var slaves []SlaveModel
+	// 	slaves = append(slaves, slave)
+	// 	master.Slaves = slaves
+	// 	db.Save(&master)
+	// }
 
 	var slaves []SlaveModel
 	db.Model(&master).Related(&slaves, "MasterRefer")
