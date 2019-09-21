@@ -10,19 +10,18 @@ type Choice struct {
 	NextStory        Story `gorm:"foreignkey:ID"`
 }
 
-// ChoiceDto encapsulates fields that should be seen by others + the parent
-type ChoiceDto struct {
+func (choice Choice) ToDto() (ret struct {
 	ID               uint   `json:"id"`
 	Title            string `json:"title"`
 	Text             string `json:"text"`
 	ParentStoryRefer uint   `json:"parentStoryID"`
 	NextStoryRefer   uint   `json:"nextStoryID"`
-}
+}) {
+	ret.ID = choice.ID
+	ret.Title = choice.Title
+	ret.Text = choice.Text
+	ret.ParentStoryRefer = choice.ParentStoryRefer
+	ret.NextStoryRefer = choice.NextStoryRefer
 
-// OrphanChoiceDto encapsulates fields that should be seen by others
-type OrphanChoiceDto struct {
-	ID             uint   `json:"id"`
-	Title          string `json:"title"`
-	Text           string `json:"text"`
-	NextStoryRefer uint   `json:"nextStoryID"`
+	return
 }

@@ -9,18 +9,19 @@ import (
 	asm "../assembler"
 	data "../data"
 	model "../model"
-	service "../service"
 )
 
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
-	var dto model.ChoiceDto
-	if err := context.BindJSON(&dto); err != nil {
+	var choice model.Choice
+	var err error
+	dto := choice.ToDto()
+	if err = context.BindJSON(&dto); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	choice, err := service.SaveChoice(asm.BuildChoice(dto))
+	choice, err = data.SaveChoice(asm.BuildChoice(dto))
 	if err != nil {
 		StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
 		return
@@ -31,7 +32,7 @@ func CreateChoice(context *gin.Context) {
 
 // GetAllChoices retrieves all choices
 func GetAllChoices(context *gin.Context) {
-	choices := service.FindAllChoices()
+	choices := data.FindAllChoices()
 	dtos := asm.BuildChoicesDto(choices)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
 }

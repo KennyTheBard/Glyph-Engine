@@ -9,7 +9,6 @@ import (
 	asm "../assembler"
 	data "../data"
 	model "../model"
-	service "../service"
 )
 
 // CreateStory creates a story

@@ -8,17 +8,16 @@ type Story struct {
 	Choices []Choice `gorm:"one2many:ParentStoryRefer"`
 }
 
-// StoryDto encapsulates fields that should be seen by others
-type StoryDto struct {
-	ID    uint   `json:"id"`
-	Title string `json:"title"`
-	Text  string `json:"text"`
-}
+func (story Story) ToDto() (ret struct {
+	ID      uint     `json:"id"`
+	Title   string   `json:"title"`
+	Text    string   `json:"text"`
+	Choices []Choice `json:"choices"`
+}) {
+	ret.ID = story.ID
+	ret.Title = story.Title
+	ret.Text = story.Text
+	ret.Choices = story.Choices
 
-// StoryCompleteDto encapsulates fields that should be seen by others + the available choices
-type StoryCompleteDto struct {
-	ID      uint              `json:"id"`
-	Title   string            `json:"title"`
-	Text    string            `json:"text"`
-	Choices []OrphanChoiceDto `json:"choices"`
+	return
 }
