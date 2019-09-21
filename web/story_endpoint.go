@@ -6,21 +6,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	asm "../assembler"
 	data "../data"
 	model "../model"
 )
 
 // CreateStory creates a story
 func CreateStory(context *gin.Context) {
-	var dto model.StoryDto
-
-	if err := context.BindJSON(&dto); err != nil {
+	var story model.Story
+	if err := context.BindJSON(&story); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	story, err := service.SaveStory(asm.BuildStory(dto))
+	story, err := data.SaveStory(story)
 	if err != nil {
 		StatusResponse(context, http.StatusInternalServerError, "Failed to create new story!")
 		return
@@ -31,9 +29,7 @@ func CreateStory(context *gin.Context) {
 
 // GetAllStories retrieves all stories
 func GetAllStories(context *gin.Context) {
-	stories := service.FindAllStories()
-	dtos := asm.BuildStoriesDto(stories)
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": data.FindAllStories()})
 }
 
 // GetStory retrieves a story
@@ -44,20 +40,19 @@ func GetStory(context *gin.Context) {
 		return
 	}
 
-	story, err := service.FindStoryById(uint(id))
+	story, err := data.FindStoryById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
-	dto := asm.BuildCompleteStoryDto(story)
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": story.ToDto()})
 }
 
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
-	var dto model.StoryDto
-	if err := context.BindJSON(&dto); err != nil {
+	var updatedStory model.Story
+	if err := context.BindJSON(&updatedStory); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
@@ -68,14 +63,14 @@ func UpdateStory(context *gin.Context) {
 		return
 	}
 
-	story, err := service.FindStoryById(uint(id))
+	story, err := data.FindStoryById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
-	data.DB.Model(&story).Update("title", dto.Title)
-	data.DB.Model(&story).Update("text", dto.Text)
+	data.DB.Model(&story).Update("title", updatedStory.Title)
+	data.DB.Model(&story).Update("text", updatedStory.Text)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }
@@ -88,7 +83,7 @@ func DeleteStory(context *gin.Context) {
 		return
 	}
 
-	err = service.DeleteStoryById(uint(id))
+	err = data.DeleteStoryById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return

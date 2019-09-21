@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	asm "../assembler"
 	data "../data"
 	model "../model"
 )
@@ -14,14 +13,12 @@ import (
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
 	var choice model.Choice
-	var err error
-	dto := choice.ToDto()
-	if err = context.BindJSON(&dto); err != nil {
+	if err := context.BindJSON(&choice); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	choice, err = data.SaveChoice(asm.BuildChoice(dto))
+	choice, err := data.SaveChoice(choice)
 	if err != nil {
 		StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
 		return
@@ -32,9 +29,7 @@ func CreateChoice(context *gin.Context) {
 
 // GetAllChoices retrieves all choices
 func GetAllChoices(context *gin.Context) {
-	choices := data.FindAllChoices()
-	dtos := asm.BuildChoicesDto(choices)
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dtos})
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": data.FindAllChoices()})
 }
 
 // GetChoice retrieves a choice
@@ -45,20 +40,19 @@ func GetChoice(context *gin.Context) {
 		return
 	}
 
-	choice, err := service.FindChoiceById(uint(id))
+	choice, err := data.FindChoiceById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
-	dto := asm.BuildChoiceDto(choice)
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": dto})
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": choice.ToDto()})
 }
 
 // UpdateChoice updates a choice
 func UpdateChoice(context *gin.Context) {
-	var dto model.ChoiceDto
-	if err := context.BindJSON(&dto); err != nil {
+	var updateChoice model.Choice
+	if err := context.BindJSON(&updateChoice); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
@@ -68,16 +62,16 @@ func UpdateChoice(context *gin.Context) {
 		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	choice, err := service.FindChoiceById(uint(id))
+	choice, err := data.FindChoiceById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
-	data.DB.Model(&choice).Update("title", dto.Title)
-	data.DB.Model(&choice).Update("text", dto.Text)
-	data.DB.Model(&choice).Update("parent_story_refer", dto.ParentStoryRefer)
-	data.DB.Model(&choice).Update("next_story_refer", dto.NextStoryRefer)
+	data.DB.Model(&choice).Update("title", updateChoice.Title)
+	data.DB.Model(&choice).Update("text", updateChoice.Text)
+	data.DB.Model(&choice).Update("parent_story_refer", updateChoice.ParentStoryRefer)
+	data.DB.Model(&choice).Update("next_story_refer", updateChoice.NextStoryRefer)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice updated successfully!"})
 }
@@ -89,7 +83,7 @@ func DeleteChoice(context *gin.Context) {
 		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	err = service.DeleteChoiceById(uint(id))
+	err = data.DeleteChoiceById(uint(id))
 	if err != nil {
 		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
