@@ -12,7 +12,7 @@ import (
 
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
-	var choice model.Choice
+	var choice model.ChoiceModel
 	if err := context.BindJSON(&choice); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
@@ -51,7 +51,7 @@ func GetChoice(context *gin.Context) {
 
 // UpdateChoice updates a choice
 func UpdateChoice(context *gin.Context) {
-	var updateChoice model.Choice
+	var updateChoice model.ChoiceModel
 	if err := context.BindJSON(&updateChoice); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return

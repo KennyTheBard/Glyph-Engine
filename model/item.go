@@ -1,19 +1,20 @@
 package model
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 // Item is the principal form of resource in the game
-type Item struct {
-	gorm.Model
-	Title string `json:"title"`
-	Text  string `json:"text"`
+type ItemModel struct {
+	ID   uint   `json:"id" gorm:"primary_key"`
+	Name string `json:"name"`
+	Text string `json:"text"`
 }
 
-// ItemDto encapsulates fields that should be seen by others
-type ItemDto struct {
-	ID    uint   `json:"id"`
-	Title string `json:"title"`
-	Text  string `json:"text"`
+func (item ItemModel) ToDto() (ret struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	Text string `json:"text"`
+}) {
+	ret.ID = item.ID
+	ret.Name = item.Name
+	ret.Text = item.Text
+
+	return
 }

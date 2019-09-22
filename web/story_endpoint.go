@@ -12,7 +12,7 @@ import (
 
 // CreateStory creates a story
 func CreateStory(context *gin.Context) {
-	var story model.Story
+	var story model.StoryModel
 	if err := context.BindJSON(&story); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
@@ -51,7 +51,7 @@ func GetStory(context *gin.Context) {
 
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
-	var updatedStory model.Story
+	var updatedStory model.StoryModel
 	if err := context.BindJSON(&updatedStory); err != nil {
 		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
