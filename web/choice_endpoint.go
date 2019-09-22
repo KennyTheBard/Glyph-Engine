@@ -8,19 +8,20 @@ import (
 
 	data "../data"
 	model "../model"
+	util "../util"
 )
 
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
 	var choice model.ChoiceModel
 	if err := context.BindJSON(&choice); err != nil {
-		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
 	choice, err := data.SaveChoice(choice)
 	if err != nil {
-		StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
+		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
 		return
 	}
 
@@ -36,13 +37,13 @@ func GetAllChoices(context *gin.Context) {
 func GetChoice(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 
 	choice, err := data.FindChoiceById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
@@ -53,22 +54,22 @@ func GetChoice(context *gin.Context) {
 func UpdateChoice(context *gin.Context) {
 	var updateChoice model.ChoiceModel
 	if err := context.BindJSON(&updateChoice); err != nil {
-		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 	choice, err := data.FindChoiceById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
-	data.DB.Model(&choice).Update("title", updateChoice.Title)
+	data.DB.Model(&choice).Update("name", updateChoice.Name)
 	data.DB.Model(&choice).Update("text", updateChoice.Text)
 	data.DB.Model(&choice).Update("parent_story_id", updateChoice.ParentStoryID)
 	data.DB.Model(&choice).Update("next_story_id", updateChoice.NextStoryID)
@@ -80,12 +81,12 @@ func UpdateChoice(context *gin.Context) {
 func DeleteChoice(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 	err = data.DeleteChoiceById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 

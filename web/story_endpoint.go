@@ -8,19 +8,20 @@ import (
 
 	data "../data"
 	model "../model"
+	util "../util"
 )
 
 // CreateStory creates a story
 func CreateStory(context *gin.Context) {
 	var story model.StoryModel
 	if err := context.BindJSON(&story); err != nil {
-		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
 	story, err := data.SaveStory(story)
 	if err != nil {
-		StatusResponse(context, http.StatusInternalServerError, "Failed to create new story!")
+		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new story!")
 		return
 	}
 
@@ -36,13 +37,13 @@ func GetAllStories(context *gin.Context) {
 func GetStory(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 
 	story, err := data.FindStoryById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
@@ -53,23 +54,23 @@ func GetStory(context *gin.Context) {
 func UpdateStory(context *gin.Context) {
 	var updatedStory model.StoryModel
 	if err := context.BindJSON(&updatedStory); err != nil {
-		StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 
 	story, err := data.FindStoryById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
-	data.DB.Model(&story).Update("title", updatedStory.Title)
+	data.DB.Model(&story).Update("name", updatedStory.Name)
 	data.DB.Model(&story).Update("text", updatedStory.Text)
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
@@ -79,15 +80,15 @@ func UpdateStory(context *gin.Context) {
 func DeleteStory(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
-		StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
 
 	err = data.DeleteStoryById(uint(id))
 	if err != nil {
-		StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
-	StatusResponse(context, http.StatusOK, "Story deleted successfully!")
+	util.StatusResponse(context, http.StatusOK, "Story deleted successfully!")
 }

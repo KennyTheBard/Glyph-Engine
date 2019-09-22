@@ -19,11 +19,11 @@ func Init() {
 		panic("failed to connect database")
 	}
 
-	DB.DropTableIfExists(&model.Story{})
-	DB.AutoMigrate(&model.Story{})
+	DB.DropTableIfExists(&model.StoryModel{})
+	DB.AutoMigrate(&model.StoryModel{})
 
-	DB.DropTableIfExists(&model.Choice{})
-	DB.AutoMigrate(&model.Choice{})
+	DB.DropTableIfExists(&model.ChoiceModel{})
+	DB.AutoMigrate(&model.ChoiceModel{})
 }
 
 func Close() {

@@ -6,13 +6,13 @@ import (
 	model "../model"
 )
 
-func SaveChoice(choice model.Choice) (model.Choice, error) {
+func SaveChoice(choice model.ChoiceModel) (model.ChoiceModel, error) {
 	DB.Save(&choice)
 	return choice, nil
 }
 
-func FindChoiceById(id uint) (model.Choice, error) {
-	var choice model.Choice
+func FindChoiceById(id uint) (model.ChoiceModel, error) {
+	var choice model.ChoiceModel
 	if id == 0 {
 		return choice, errors.New("ID's must be positive numbers")
 	}
@@ -24,8 +24,8 @@ func FindChoiceById(id uint) (model.Choice, error) {
 	return choice, nil
 }
 
-func FindAllChoices() []model.Choice {
-	var choices []model.Choice
+func FindAllChoices() []model.ChoiceModel {
+	var choices []model.ChoiceModel
 	DB.Find(&choices)
 	return choices
 }
@@ -44,7 +44,7 @@ func UpdateChoiceField(id uint, fields map[string]interface{}) error {
 }
 
 func DeleteChoiceById(id uint) error {
-	var choice model.Choice
+	var choice model.ChoiceModel
 	if id == 0 {
 		return errors.New("ID's must be positive numbers")
 	}
