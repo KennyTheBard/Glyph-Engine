@@ -23,7 +23,7 @@ func FindStoryById(id uint) (model.Story, error) {
 	}
 
 	var choices []model.Choice
-	DB.Model(&story).Related(&choices, "ParentStoryRefer")
+	DB.Model(&story).Related(&choices, "ParentStoryID")
 	story.Choices = choices
 	return story, nil
 }

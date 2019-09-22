@@ -2,10 +2,10 @@ package model
 
 // Story is the main element of a page
 type Story struct {
-	ID      uint     `gorm:"primary_key" json:"id"`
+	ID      uint     `json:"id" 		gorm:"primary_key"`
 	Title   string   `json:"title"`
 	Text    string   `json:"text"`
-	Choices []Choice `gorm:"one2many:ParentStoryRefer"`
+	Choices []Choice `json:"choices" 	gorm:"one2many:parentStoryID"`
 }
 
 func (story Story) ToDto() (ret struct {
