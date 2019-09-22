@@ -12,18 +12,28 @@ import (
 var DB *gorm.DB
 
 // Init prepares the link with the data source
-func Init() {
+func Init(cleanStart bool) {
 	var err error
 	DB, err = gorm.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=moonshine_square password=postgres sslmode=disable")
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	DB.DropTableIfExists(&model.StoryModel{})
-	DB.AutoMigrate(&model.StoryModel{})
+	if cleanStart {
+		DB.DropTableIfExists(&model.StoryModel{})
+		DB.DropTableIfExists(&model.ChoiceModel{})
+		DB.DropTableIfExists(&model.ItemModel{})
+		DB.DropTableIfExists(&model.ItemCost{})
+		DB.DropTableIfExists(&model.ItemReward{})
+		DB.DropTableIfExists(&model.ItemRequirement{})
+	}
 
-	DB.DropTableIfExists(&model.ChoiceModel{})
+	DB.AutoMigrate(&model.StoryModel{})
 	DB.AutoMigrate(&model.ChoiceModel{})
+	DB.AutoMigrate(&model.ItemModel{})
+	DB.AutoMigrate(&model.ItemCost{})
+	DB.AutoMigrate(&model.ItemReward{})
+	DB.AutoMigrate(&model.ItemRequirement{})
 }
 
 func Close() {
