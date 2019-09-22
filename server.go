@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "./data"
+	web "./web"
 )
 
 var router *gin.Engine

@@ -63,16 +63,13 @@ func UpdateChoice(context *gin.Context) {
 		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	choice, err := data.FindChoiceById(uint(id))
-	if err != nil {
-		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
-		return
-	}
 
-	data.DB.Model(&choice).Update("name", updateChoice.Name)
-	data.DB.Model(&choice).Update("text", updateChoice.Text)
-	data.DB.Model(&choice).Update("parent_story_id", updateChoice.ParentStoryID)
-	data.DB.Model(&choice).Update("next_story_id", updateChoice.NextStoryID)
+	data.UpdateChoiceField(uint(id), map[string]interface{}{
+		"name":            updateChoice.Name,
+		"text":            updateChoice.Text,
+		"parent_story_id": updateChoice.ParentStoryID,
+		"next_story_id":   updateChoice.NextStoryID,
+	})
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice updated successfully!"})
 }

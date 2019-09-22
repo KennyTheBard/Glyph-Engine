@@ -64,14 +64,10 @@ func UpdateStory(context *gin.Context) {
 		return
 	}
 
-	story, err := data.FindStoryById(uint(id))
-	if err != nil {
-		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
-		return
-	}
-
-	data.DB.Model(&story).Update("name", updatedStory.Name)
-	data.DB.Model(&story).Update("text", updatedStory.Text)
+	data.UpdateStoryField(uint(id), map[string]interface{}{
+		"name": updatedStory.Name,
+		"text": updatedStory.Text,
+	})
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }

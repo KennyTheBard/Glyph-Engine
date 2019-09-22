@@ -63,14 +63,11 @@ func UpdateItem(context *gin.Context) {
 		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	item, err := data.FindItemById(uint(id))
-	if err != nil {
-		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
-		return
-	}
 
-	data.DB.Model(&item).Update("name", updateItem.Name)
-	data.DB.Model(&item).Update("text", updateItem.Text)
+	data.UpdateItemField(uint(id), map[string]interface{}{
+		"name": updateItem.Name,
+		"text": updateItem.Text,
+	})
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "item updated successfully!"})
 }
