@@ -30,14 +30,19 @@ func main() {
 			storyEndpoint.PUT("/:id", web.UpdateStory)
 			// storyEndpoint.PUT("/:id/choice", web.UpdateStoryChoices)
 			storyEndpoint.DELETE("/:id", web.DeleteStory)
-			// storyEndpoint.DELETE("/:id/choice", web.DeleteStoryChoice)
 		}
 		choiceEndpoint := api.Group("/choice")
 		{
 			choiceEndpoint.POST("/", web.CreateChoice)
 			choiceEndpoint.GET("/", web.GetAllChoices)
 			choiceEndpoint.GET("/:id", web.GetChoice)
+			// choiceEndpoint.GET("/:id/cost", web.GetChoiceCosts)
+			// choiceEndpoint.GET("/:id/reward", web.GetChoiceRewards)
+			// choiceEndpoint.GET("/:id/requirement", web.GetChoiceRewards)
 			choiceEndpoint.PUT("/:id", web.UpdateChoice)
+			// choiceEndpoint.PUT("/:id/cost", web.UpdateChoiceCosts)
+			// choiceEndpoint.PUT("/:id/reward", web.UpdateChoiceRewards)
+			// choiceEndpoint.PUT("/:id/requirement", web.UpdateChoiceRequirements)
 			choiceEndpoint.DELETE("/:id", web.DeleteChoice)
 		}
 	}
