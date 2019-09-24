@@ -3,10 +3,12 @@ package model
 // ItemStack is a pair of an item and a number of said items
 type ItemStack struct {
 	ID       uint      `json:"id" 			gorm:"primary_key"`
-	ItemID   uint      `json:"itemID" 		gorm:"column:item_id"`
 	Item     ItemModel `json:"item" 		gorm:"foreignkey:ID"`
 	Number   uint      `json:"number"`
+	Type     StackType `json:"type" 		gorm:"foreignkey:ID"`
+	ItemID   uint      `json:"itemID" 		gorm:"column:item_id"`
 	ChoiceID uint      `json:"choiceID" 	gorm:"column:choice_id"`
+	TypeID   uint      `json:"typeID" 		gorm:"column:stack_type_id"`
 }
 
 func (stack ItemStack) ToDto() (ret struct {

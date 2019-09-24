@@ -23,17 +23,15 @@ func Init(cleanStart bool) {
 		DB.DropTableIfExists(&model.StoryModel{})
 		DB.DropTableIfExists(&model.ChoiceModel{})
 		DB.DropTableIfExists(&model.ItemModel{})
-		DB.DropTableIfExists(&model.ItemCost{})
-		DB.DropTableIfExists(&model.ItemReward{})
-		DB.DropTableIfExists(&model.ItemRequirement{})
+		DB.DropTableIfExists(&model.ItemStack{})
+		DB.DropTableIfExists(&model.StackType{})
 	}
 
 	DB.AutoMigrate(&model.StoryModel{})
 	DB.AutoMigrate(&model.ChoiceModel{})
 	DB.AutoMigrate(&model.ItemModel{})
-	DB.AutoMigrate(&model.ItemCost{})
-	DB.AutoMigrate(&model.ItemReward{})
-	DB.AutoMigrate(&model.ItemRequirement{})
+	DB.AutoMigrate(&model.ItemStack{})
+	DB.AutoMigrate(&model.StackType{})
 }
 
 func Close() {
