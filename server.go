@@ -29,7 +29,7 @@ func main() {
 			storyEndpoint.GET("/:id", web.GetStory)
 			// storyEndpoint.GET("/:id/choice", web.GetStoryChoices)
 			storyEndpoint.PUT("/:id", web.UpdateStory)
-			// storyEndpoint.PUT("/:id/choice", web.UpdateStoryChoices)
+			storyEndpoint.PUT("/:id/choice/:choiceid", web.AddChoiceToStory)
 			storyEndpoint.DELETE("/:id", web.DeleteStory)
 		}
 		choiceEndpoint := api.Group("/choice")

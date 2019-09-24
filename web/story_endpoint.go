@@ -75,6 +75,42 @@ func UpdateStory(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }
 
+// AddChoiceToStory add a choice to a story
+func AddChoiceToStory(context *gin.Context) {
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
+	}
+
+	story, err := data.FindStoryById(uint(id))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
+	}
+
+	choiceId, err := strconv.Atoi(context.Param("choiceid"))
+	if err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, "choiceid parameter is not an unsigned integer!")
+		return
+	}
+
+	choice, err := data.FindChoiceById(uint(choiceId))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		return
+	}
+
+	choice.ParentStoryID = story.ID
+	data.SaveChoice(choice)
+	if err != nil {
+		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Choice added to the story successfully!", "resourceId": choice.ID})
+}
+
 // DeleteStory removes a story
 func DeleteStory(context *gin.Context) {
 	id, err := strconv.Atoi(context.Param("id"))
