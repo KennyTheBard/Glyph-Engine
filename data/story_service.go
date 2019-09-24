@@ -57,3 +57,8 @@ func DeleteStoryById(id uint) error {
 	DB.Delete(&story)
 	return nil
 }
+
+func DeleteStory(story model.StoryModel) error {
+	DB.Delete(&story)
+	return nil
+}

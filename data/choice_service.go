@@ -56,3 +56,8 @@ func DeleteChoiceById(id uint) error {
 	DB.Delete(&choice)
 	return nil
 }
+
+func DeleteChoice(choice model.ChoiceModel) error {
+	DB.Delete(&choice)
+	return nil
+}

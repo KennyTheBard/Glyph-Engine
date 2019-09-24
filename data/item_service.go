@@ -56,3 +56,8 @@ func DeleteItemById(id uint) error {
 	DB.Delete(&item)
 	return nil
 }
+
+func DeleteItem(item model.ItemModel) error {
+	DB.Delete(&item)
+	return nil
+}

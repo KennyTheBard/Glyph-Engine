@@ -56,3 +56,8 @@ func DeleteItemRewardById(id uint) error {
 	DB.Delete(&reward)
 	return nil
 }
+
+func DeleteItemReward(reward model.ItemReward) error {
+	DB.Delete(&reward)
+	return nil
+}

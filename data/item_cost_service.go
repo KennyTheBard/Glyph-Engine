@@ -56,3 +56,8 @@ func DeleteItemCostById(id uint) error {
 	DB.Delete(&cost)
 	return nil
 }
+
+func DeleteItemCost(cost model.ItemCost) error {
+	DB.Delete(&cost)
+	return nil
+}

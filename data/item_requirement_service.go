@@ -56,3 +56,8 @@ func DeleteItemRequirementById(id uint) error {
 	DB.Delete(&requirement)
 	return nil
 }
+
+func DeleteItemRequirement(requirement model.ItemRequirement) error {
+	DB.Delete(&requirement)
+	return nil
+}
