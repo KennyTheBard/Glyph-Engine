@@ -25,6 +25,14 @@ func CreateStory(context *gin.Context) {
 		return
 	}
 
+	for _, choice := range story.Choices {
+		_, err := data.SaveChoice(choice)
+		if err != nil {
+			util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
+			return
+		}
+	}
+
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Story created successfully!", "resourceId": story.ID})
 }
 
