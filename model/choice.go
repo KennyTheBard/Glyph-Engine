@@ -7,7 +7,7 @@ type ChoiceModel struct {
 	Text          string            `json:"text"`
 	ParentStoryID uint              `json:"parentStoryID" 	gorm:"column:parent_story_id"`
 	NextStoryID   uint              `json:"nextStoryID" 	gorm:"column:next_story_id"`
-	NextStory     StoryModel        `json:"choices" 		gorm:"foreignkey:ID"`
+	NextStory     StoryModel        `json:"nextStory" 		gorm:"foreignkey:ID"`
 	Costs         []ItemCost        `json:"costs" 			gorm:"one2many:ChoiceID"`
 	Rewards       []ItemReward      `json:"rewards" 		gorm:"one2many:ChoiceID"`
 	Requirements  []ItemRequirement `json:"requirements" 	gorm:"one2many:ChoiceID"`
