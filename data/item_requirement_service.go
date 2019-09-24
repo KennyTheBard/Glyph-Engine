@@ -50,7 +50,7 @@ func DeleteItemRequirementById(id uint) error {
 	}
 
 	DB.First(&requirement, id)
-	if item.ID != id {
+	if requirement.ID != id {
 		return errors.New("No requirement found with the given ID")
 	}
 	DB.Delete(&requirement)

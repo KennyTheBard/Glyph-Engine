@@ -50,7 +50,7 @@ func DeleteItemCostById(id uint) error {
 	}
 
 	DB.First(&cost, id)
-	if item.ID != id {
+	if cost.ID != id {
 		return errors.New("No cost found with the given ID")
 	}
 	DB.Delete(&cost)

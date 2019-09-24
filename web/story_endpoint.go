@@ -64,10 +64,13 @@ func UpdateStory(context *gin.Context) {
 		return
 	}
 
-	data.UpdateStoryField(uint(id), map[string]interface{}{
+	if err := data.UpdateStoryField(uint(id), map[string]interface{}{
 		"name": updatedStory.Name,
 		"text": updatedStory.Text,
-	})
+	}); err != nil {
+		util.StatusResponse(context, http.StatusNotFound, err.Error())
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Story updated successfully!"})
 }

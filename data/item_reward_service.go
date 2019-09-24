@@ -50,7 +50,7 @@ func DeleteItemRewardById(id uint) error {
 	}
 
 	DB.First(&reward, id)
-	if item.ID != id {
+	if reward.ID != id {
 		return errors.New("No reward found with the given ID")
 	}
 	DB.Delete(&reward)
