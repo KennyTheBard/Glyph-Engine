@@ -19,19 +19,21 @@ func Init(cleanStart bool) {
 		panic("failed to connect database")
 	}
 
-	migrate(&model.StoryModel{}, cleanStart)
-	migrate(&model.ChoiceModel{}, cleanStart)
-	migrate(&model.ItemModel{}, cleanStart)
-	migrate(&model.ItemCost{}, cleanStart)
-	migrate(&model.ItemReward{}, cleanStart)
-	migrate(&model.ItemRequirement{}, cleanStart)
-}
-
-func migrate(dbmodel interface{}, cleanStart bool) {
 	if cleanStart {
-		DB.DropTableIfExists(&dbmodel)
+		DB.DropTableIfExists(&model.StoryModel{})
+		DB.DropTableIfExists(&model.ChoiceModel{})
+		DB.DropTableIfExists(&model.ItemModel{})
+		DB.DropTableIfExists(&model.ItemCost{})
+		DB.DropTableIfExists(&model.ItemReward{})
+		DB.DropTableIfExists(&model.ItemRequirement{})
 	}
-	DB.AutoMigrate(&dbmodel)
+
+	DB.AutoMigrate(&model.StoryModel{})
+	DB.AutoMigrate(&model.ChoiceModel{})
+	DB.AutoMigrate(&model.ItemModel{})
+	DB.AutoMigrate(&model.ItemCost{})
+	DB.AutoMigrate(&model.ItemReward{})
+	DB.AutoMigrate(&model.ItemRequirement{})
 }
 
 func Close() {
