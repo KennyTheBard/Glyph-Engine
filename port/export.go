@@ -2,11 +2,12 @@ package port
 
 import (
 	"bufio"
+	"encoding/json"
 	"os"
 )
 
-func Export(fileName string, objects interface{})) error {
-	file, err := os.Open(fileName)
+func Export(fileName string, objects []interface{}) error {
+	file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		return err
 	}
@@ -14,13 +15,13 @@ func Export(fileName string, objects interface{})) error {
 
 	writer := bufio.NewWriter(file)
 
-	for object := range objects {
+	for _, object := range objects {
 		bs, err := json.Marshal(object)
 		if err != nil {
 			return err
 		}
 
-		_, err := writer.Write(bs)
+		_, err = writer.Write(bs)
 		if err != nil {
 			return err
 		}

@@ -51,4 +51,15 @@ func main() {
 	if err := router.Run(); err != nil {
 		panic(err)
 	}
+
+	// stories := data.FindAllStories()
+	// intStories := make([]interface{}, len(stories))
+	// for i, story := range stories {
+	// 	intStories[i] = story
+	// }
+
+	// port.Export("test_export.txt", intStories)
+	// port.Import("test_export.txt", 100, func(bs []byte) {
+	// 	fmt.Println(string(bs))
+	// })
 }
