@@ -27,7 +27,7 @@ func main() {
 			storyEndpoint.POST("/", web.CreateStory)
 			storyEndpoint.GET("/", web.GetAllStories)
 			storyEndpoint.GET("/:id", web.GetStory)
-			// storyEndpoint.GET("/:id/choice", web.GetStoryChoices)
+			storyEndpoint.GET("/:id/choice", web.GetStoryChoices)
 			storyEndpoint.PUT("/:id", web.UpdateStory)
 			storyEndpoint.PUT("/:id/choice/:choiceid", web.AddChoiceToStory)
 			storyEndpoint.DELETE("/:id", web.DeleteStory)

@@ -58,6 +58,28 @@ func GetStory(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": story.ToDto()})
 }
 
+// GetStoryChoices retrives the choices of the story with the given id
+func GetStoryChoices(context *gin.Context) {
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
+		return
+	}
+
+	story, err := data.FindStoryById(uint(id))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
+	}
+
+	choices := make([]interface{}, len(story.Choices))
+	for i, choice := range story.Choices {
+		choices[i] = choice.ToDto()
+	}
+
+	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": choices})
+}
+
 // UpdateStory updates a story
 func UpdateStory(context *gin.Context) {
 	var updatedStory model.StoryModel

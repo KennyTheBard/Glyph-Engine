@@ -21,3 +21,15 @@ func (story StoryModel) ToDto() (ret struct {
 
 	return
 }
+
+func (story StoryModel) ToChoicelessDto() (ret struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	Text string `json:"text"`
+}) {
+	ret.ID = story.ID
+	ret.Name = story.Name
+	ret.Text = story.Text
+
+	return
+}
