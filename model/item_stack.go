@@ -13,16 +13,20 @@ type ItemStack struct {
 
 func (stack ItemStack) ToDto() (ret struct {
 	ID       uint      `json:"id"`
-	ItemID   uint      `json:"itemID"`
 	Item     ItemModel `json:"item"`
 	Number   uint      `json:"number"`
+	Type     StackType `json:"type"`
+	ItemID   uint      `json:"itemID"`
 	ChoiceID uint      `json:"choiceID"`
+	TypeID   uint      `json:"typeID"`
 }) {
 	ret.ID = stack.ID
-	ret.ItemID = stack.ItemID
 	ret.Item = stack.Item
 	ret.Number = stack.Number
+	ret.Type = stack.Type
+	ret.ItemID = stack.ItemID
 	ret.ChoiceID = stack.ChoiceID
+	ret.TypeID = stack.TypeID
 
 	return
 }
