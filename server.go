@@ -46,6 +46,14 @@ func main() {
 			// choiceEndpoint.PUT("/:id/requirement", web.UpdateChoiceRequirements)
 			choiceEndpoint.DELETE("/:id", web.DeleteChoice)
 		}
+		itemEndpoint := api.Group("/item")
+		{
+			itemEndpoint.POST("/", web.CreateItem)
+			itemEndpoint.GET("/", web.GetAllItems)
+			itemEndpoint.GET("/:id", web.GetItem)
+			itemEndpoint.PUT("/:id", web.UpdateItem)
+			itemEndpoint.DELETE("/:id", web.DeleteItem)
+		}
 	}
 
 	if err := router.Run(); err != nil {
