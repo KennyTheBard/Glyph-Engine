@@ -70,7 +70,7 @@ func UpdateItem(context *gin.Context) {
 		return
 	}
 
-	if err := data.UpdateItemField(uint(id), map[string]interface{}{
+	if err := data.UpdateItemField(item, map[string]interface{}{
 		"name": updateItem.Name,
 		"text": updateItem.Text,
 	}); err != nil {
@@ -89,7 +89,7 @@ func DeleteItem(context *gin.Context) {
 		return
 	}
 
-	item, err = data.FindItemById(uint(id))
+	item, err := data.FindItemById(uint(id))
 	if err != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
 		return

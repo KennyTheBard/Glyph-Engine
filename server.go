@@ -54,6 +54,13 @@ func main() {
 			itemEndpoint.PUT("/:id", web.UpdateItem)
 			itemEndpoint.DELETE("/:id", web.DeleteItem)
 		}
+		accountEndpoint := api.Group("/account")
+		{
+			accountEndpoint.POST("/sign", web.SignIn)
+			accountEndpoint.POST("/log", web.LogIn)
+			// accountEndpoint.PUT("/:id", web.UpdateAccount)
+			// accountEndpoint.DELETE("/:id", web.DeactivateAccount)
+		}
 	}
 
 	if err := router.Run(); err != nil {

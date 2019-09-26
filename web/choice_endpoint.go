@@ -70,7 +70,7 @@ func UpdateChoice(context *gin.Context) {
 		return
 	}
 
-	data.UpdateChoiceField(choice, map[string]interface{}{
+	if err := data.UpdateChoiceField(choice, map[string]interface{}{
 		"name":            updateChoice.Name,
 		"text":            updateChoice.Text,
 		"parent_story_id": updateChoice.ParentStoryID,
