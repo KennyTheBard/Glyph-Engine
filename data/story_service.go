@@ -34,27 +34,11 @@ func FindAllStories() []model.StoryModel {
 	return stories
 }
 
-func UpdateStoryField(id uint, fields map[string]interface{}) error {
-	story, err := FindStoryById(id)
-	if err != nil {
-		return err
-	}
-
+func UpdateStoryField(story model.StoryModel, fields map[string]interface{}) error {
 	for name, value := range fields {
 		DB.Model(&story).Update(name, value)
 	}
 
-	return nil
-}
-
-func DeleteStoryById(id uint) error {
-	var story model.StoryModel
-	DB.First(&story, id)
-	if story.ID != id {
-		return errors.New("No story found with the given ID")
-	}
-
-	DB.Delete(&story)
 	return nil
 }
 

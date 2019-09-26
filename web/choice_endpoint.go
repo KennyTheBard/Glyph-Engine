@@ -64,12 +64,21 @@ func UpdateChoice(context *gin.Context) {
 		return
 	}
 
-	data.UpdateChoiceField(uint(id), map[string]interface{}{
+	choice, err := data.FindChoiceById(uint(id))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
+		return
+	}
+
+	data.UpdateChoiceField(choice, map[string]interface{}{
 		"name":            updateChoice.Name,
 		"text":            updateChoice.Text,
 		"parent_story_id": updateChoice.ParentStoryID,
 		"next_story_id":   updateChoice.NextStoryID,
-	})
+	}); err != nil {
+		util.StatusResponse(context, http.StatusNotFound, err.Error())
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice updated successfully!"})
 }
@@ -81,11 +90,13 @@ func DeleteChoice(context *gin.Context) {
 		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	err = data.DeleteChoiceById(uint(id))
+
+	choice, err := data.FindChoiceById(uint(id))
 	if err != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
+	data.DeleteChoice(choice)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice deleted successfully!"})
 }

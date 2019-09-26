@@ -64,10 +64,19 @@ func UpdateItem(context *gin.Context) {
 		return
 	}
 
-	data.UpdateItemField(uint(id), map[string]interface{}{
+	item, err := data.FindItemById(uint(id))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
+		return
+	}
+
+	if err := data.UpdateItemField(uint(id), map[string]interface{}{
 		"name": updateItem.Name,
 		"text": updateItem.Text,
-	})
+	}); err != nil {
+		util.StatusResponse(context, http.StatusNotFound, err.Error())
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "item updated successfully!"})
 }
@@ -79,11 +88,13 @@ func DeleteItem(context *gin.Context) {
 		util.StatusResponse(context, http.StatusBadRequest, "id parameter is not an unsigned integer!")
 		return
 	}
-	err = data.DeleteItemById(uint(id))
+
+	item, err = data.FindItemById(uint(id))
 	if err != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
 		return
 	}
 
+	data.DeleteItem(item)
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Item deleted successfully!"})
 }

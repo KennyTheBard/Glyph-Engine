@@ -94,7 +94,13 @@ func UpdateStory(context *gin.Context) {
 		return
 	}
 
-	if err := data.UpdateStoryField(uint(id), map[string]interface{}{
+	story, err := data.FindStoryById(uint(id))
+	if err != nil {
+		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
+		return
+	}
+
+	if err := data.UpdateStoryField(story, map[string]interface{}{
 		"name": updatedStory.Name,
 		"text": updatedStory.Text,
 	}); err != nil {
@@ -149,11 +155,12 @@ func DeleteStory(context *gin.Context) {
 		return
 	}
 
-	err = data.DeleteStoryById(uint(id))
+	story, err := data.FindStoryById(uint(id))
 	if err != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No story for the given ID!")
 		return
 	}
 
+	data.DeleteStory(story)
 	util.StatusResponse(context, http.StatusOK, "Story deleted successfully!")
 }

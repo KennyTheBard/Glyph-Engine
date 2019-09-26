@@ -30,30 +30,11 @@ func FindAllChoices() []model.ChoiceModel {
 	return choices
 }
 
-func UpdateChoiceField(id uint, fields map[string]interface{}) error {
-	choice, err := FindChoiceById(id)
-	if err != nil {
-		return err
-	}
-
+func UpdateChoiceField(choice model.ChoiceModel, fields map[string]interface{}) error {
 	for name, value := range fields {
 		DB.Model(&choice).Update(name, value)
 	}
 
-	return nil
-}
-
-func DeleteChoiceById(id uint) error {
-	var choice model.ChoiceModel
-	if id == 0 {
-		return errors.New("ID's must be positive numbers")
-	}
-
-	DB.First(&choice, id)
-	if choice.ID != id {
-		return errors.New("No choice found with the given ID")
-	}
-	DB.Delete(&choice)
 	return nil
 }
 

@@ -30,30 +30,11 @@ func FindAllItems() []model.ItemModel {
 	return items
 }
 
-func UpdateItemField(id uint, fields map[string]interface{}) error {
-	item, err := FindItemById(id)
-	if err != nil {
-		return err
-	}
-
+func UpdateItemField(item model.ItemModel, fields map[string]interface{}) error {
 	for name, value := range fields {
 		DB.Model(&item).Update(name, value)
 	}
 
-	return nil
-}
-
-func DeleteItemById(id uint) error {
-	var item model.ItemModel
-	if id == 0 {
-		return errors.New("ID's must be positive numbers")
-	}
-
-	DB.First(&item, id)
-	if item.ID != id {
-		return errors.New("No item found with the given ID")
-	}
-	DB.Delete(&item)
 	return nil
 }
 
