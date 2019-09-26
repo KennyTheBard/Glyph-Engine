@@ -7,7 +7,6 @@ import (
 
 	data "../data"
 	model "../model"
-	sec "../security"
 	util "../util"
 )
 
@@ -25,7 +24,7 @@ func SignIn(context *gin.Context) {
 
 	// TODO: add account validator through wrapper function
 	var err error
-	player.Password, err = sec.HashPassword(player.Password)
+	player.Password, err = util.HashPassword(player.Password)
 
 	if err != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
@@ -49,7 +48,7 @@ func LogIn(context *gin.Context) {
 		return
 	}
 
-	if sec.CheckPasswordHash(logInData.Password, player.Password) {
+	if util.CheckPasswordHash(logInData.Password, player.Password) {
 		// TODO: return a session token
 		context.JSON(http.StatusCreated, gin.H{"status": http.StatusOK, "message": "Logged into your account successfully!"})
 	} else {
