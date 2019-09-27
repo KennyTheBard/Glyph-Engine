@@ -6,18 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "../data"
-	model "../model"
 	util "../util"
 )
 
 func SignIn(context *gin.Context) {
-	var player model.PlayerModel
+	var player data.PlayerModel
 	if err := context.BindJSON(&player); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	if _, err := data.FindPlayerByUsername(player.Username); err == nil {
+	var aux data.PlayerModel
+	if aux.FindByUsername(player.Username) == nil {
 		util.StatusResponse(context, http.StatusConflict, "Username already in use!")
 		return
 	}
@@ -31,19 +31,19 @@ func SignIn(context *gin.Context) {
 		return
 	}
 
-	data.SavePlayer(player)
+	player.Save()
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Account created successfully!"})
 }
 
 func LogIn(context *gin.Context) {
-	var logInData model.PlayerModel
+	var logInData data.PlayerModel
 	if err := context.BindJSON(&logInData); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	player, err := data.FindPlayerByUsername(logInData.Username)
-	if err != nil {
+	var player data.PlayerModel
+	if player.FindByUsername(logInData.Username) != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Wrong username or password!")
 		return
 	}

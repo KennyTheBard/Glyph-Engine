@@ -7,30 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "../data"
-	model "../model"
 	util "../util"
 )
 
 // CreateItem creates an item
 func CreateItem(context *gin.Context) {
-	var item model.ItemModel
+	var item data.ItemModel
 	if err := context.BindJSON(&item); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	item, err := data.SaveItem(item)
-	if err != nil {
+	if item.Save() != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new item!")
 		return
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Item created successfully!", "resourceId": item.ID})
-}
-
-// GetAllItems retrieves all items
-func GetAllItems(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": data.FindAllItems()})
 }
 
 // GetItem retrieves an item
@@ -41,8 +34,8 @@ func GetItem(context *gin.Context) {
 		return
 	}
 
-	item, err := data.FindItemById(uint(id))
-	if err != nil {
+	var item data.ItemModel
+	if item.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
 		return
 	}
@@ -52,7 +45,7 @@ func GetItem(context *gin.Context) {
 
 // UpdateItem updates an item
 func UpdateItem(context *gin.Context) {
-	var updateItem model.ItemModel
+	var updateItem data.ItemModel
 	if err := context.BindJSON(&updateItem); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
@@ -64,13 +57,13 @@ func UpdateItem(context *gin.Context) {
 		return
 	}
 
-	item, err := data.FindItemById(uint(id))
-	if err != nil {
+	var item data.ItemModel
+	if item.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
 		return
 	}
 
-	if err := data.UpdateItemField(item, map[string]interface{}{
+	if err := item.UpdateFields(map[string]interface{}{
 		"name": updateItem.Name,
 		"text": updateItem.Text,
 	}); err != nil {
@@ -89,12 +82,12 @@ func DeleteItem(context *gin.Context) {
 		return
 	}
 
-	item, err := data.FindItemById(uint(id))
-	if err != nil {
+	var item data.ItemModel
+	if item.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No item for the given ID!")
 		return
 	}
 
-	data.DeleteItem(item)
+	item.Delete()
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Item deleted successfully!"})
 }

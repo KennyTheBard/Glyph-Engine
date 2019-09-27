@@ -25,7 +25,6 @@ func main() {
 		storyEndpoint := api.Group("/story")
 		{
 			storyEndpoint.POST("/", web.CreateStory)
-			storyEndpoint.GET("/", web.GetAllStories)
 			storyEndpoint.GET("/:id", web.GetStory)
 			storyEndpoint.GET("/:id/choice", web.GetStoryChoices)
 			storyEndpoint.PUT("/:id", web.UpdateStory)
@@ -35,7 +34,6 @@ func main() {
 		choiceEndpoint := api.Group("/choice")
 		{
 			choiceEndpoint.POST("/", web.CreateChoice)
-			choiceEndpoint.GET("/", web.GetAllChoices)
 			choiceEndpoint.GET("/:id", web.GetChoice)
 			// choiceEndpoint.GET("/:id/cost", web.GetChoiceCosts)
 			// choiceEndpoint.GET("/:id/reward", web.GetChoiceRewards)
@@ -49,7 +47,6 @@ func main() {
 		itemEndpoint := api.Group("/item")
 		{
 			itemEndpoint.POST("/", web.CreateItem)
-			itemEndpoint.GET("/", web.GetAllItems)
 			itemEndpoint.GET("/:id", web.GetItem)
 			itemEndpoint.PUT("/:id", web.UpdateItem)
 			itemEndpoint.DELETE("/:id", web.DeleteItem)

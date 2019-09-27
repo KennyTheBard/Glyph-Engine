@@ -4,8 +4,6 @@ import (
 	"github.com/jinzhu/gorm"
 	// this is need in order to be able to use postgres syntax
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-
-	model "../model"
 )
 
 // DB is the reference to the ORM that comunicates with th data source
@@ -20,18 +18,18 @@ func Init(cleanStart bool) {
 	}
 
 	if cleanStart {
-		DB.DropTableIfExists(&model.StoryModel{})
-		DB.DropTableIfExists(&model.ChoiceModel{})
-		DB.DropTableIfExists(&model.ItemModel{})
-		DB.DropTableIfExists(&model.ItemStack{})
-		DB.DropTableIfExists(&model.PlayerModel{})
+		DB.DropTableIfExists(&StoryModel{})
+		DB.DropTableIfExists(&ChoiceModel{})
+		DB.DropTableIfExists(&ItemModel{})
+		DB.DropTableIfExists(&ItemStack{})
+		DB.DropTableIfExists(&PlayerModel{})
 	}
 
-	DB.AutoMigrate(&model.StoryModel{})
-	DB.AutoMigrate(&model.ChoiceModel{})
-	DB.AutoMigrate(&model.ItemModel{})
-	DB.AutoMigrate(&model.ItemStack{})
-	DB.AutoMigrate(&model.PlayerModel{})
+	DB.AutoMigrate(&StoryModel{})
+	DB.AutoMigrate(&ChoiceModel{})
+	DB.AutoMigrate(&ItemModel{})
+	DB.AutoMigrate(&ItemStack{})
+	DB.AutoMigrate(&PlayerModel{})
 }
 
 func Close() {

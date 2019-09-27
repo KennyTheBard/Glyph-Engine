@@ -7,30 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "../data"
-	model "../model"
 	util "../util"
 )
 
 // CreateChoice creates a choice
 func CreateChoice(context *gin.Context) {
-	var choice model.ChoiceModel
+	var choice data.ChoiceModel
 	if err := context.BindJSON(&choice); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	choice, err := data.SaveChoice(choice)
-	if err != nil {
+	if choice.Save() != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
 		return
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Choice created successfully!", "resourceId": choice.ID})
-}
-
-// GetAllChoices retrieves all choices
-func GetAllChoices(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "body": data.FindAllChoices()})
 }
 
 // GetChoice retrieves a choice
@@ -41,8 +34,8 @@ func GetChoice(context *gin.Context) {
 		return
 	}
 
-	choice, err := data.FindChoiceById(uint(id))
-	if err != nil {
+	var choice data.ChoiceModel
+	if choice.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
@@ -52,7 +45,7 @@ func GetChoice(context *gin.Context) {
 
 // UpdateChoice updates a choice
 func UpdateChoice(context *gin.Context) {
-	var updateChoice model.ChoiceModel
+	var updateChoice data.ChoiceModel
 	if err := context.BindJSON(&updateChoice); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
@@ -64,13 +57,13 @@ func UpdateChoice(context *gin.Context) {
 		return
 	}
 
-	choice, err := data.FindChoiceById(uint(id))
-	if err != nil {
+	var choice data.ChoiceModel
+	if choice.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
-	if err := data.UpdateChoiceField(choice, map[string]interface{}{
+	if err := choice.UpdateFields(map[string]interface{}{
 		"name":            updateChoice.Name,
 		"text":            updateChoice.Text,
 		"parent_story_id": updateChoice.ParentStoryID,
@@ -91,12 +84,12 @@ func DeleteChoice(context *gin.Context) {
 		return
 	}
 
-	choice, err := data.FindChoiceById(uint(id))
-	if err != nil {
+	var choice data.ChoiceModel
+	if choice.FindById(uint(id)) != nil {
 		util.StatusResponse(context, http.StatusNotFound, "No choice for the given ID!")
 		return
 	}
 
-	data.DeleteChoice(choice)
+	choice.Delete()
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice deleted successfully!"})
 }
