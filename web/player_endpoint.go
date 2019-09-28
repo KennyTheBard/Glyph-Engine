@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "../data"
+	security "../security"
 	util "../util"
 )
 
@@ -24,7 +25,7 @@ func SignIn(context *gin.Context) {
 
 	// TODO: add account validator through wrapper function
 	var err error
-	player.Password, err = util.HashPassword(player.Password)
+	player.Password, err = security.HashPassword(player.Password)
 
 	if err != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
@@ -48,9 +49,8 @@ func LogIn(context *gin.Context) {
 		return
 	}
 
-	if util.CheckPasswordHash(logInData.Password, player.Password) {
-		// TODO: return a session token
-		context.JSON(http.StatusCreated, gin.H{"status": http.StatusOK, "message": "Logged into your account successfully!"})
+	if security.CheckPasswordHash(logInData.Password, player.Password) {
+		context.JSON(http.StatusCreated, gin.H{"status": http.StatusOK, "message": "Logged into your account successfully!", "accessToken": security.Authorizate(player.username)})
 	} else {
 		context.JSON(http.StatusCreated, gin.H{"status": http.StatusBadRequest, "message": "Wrong username or password!"})
 	}
