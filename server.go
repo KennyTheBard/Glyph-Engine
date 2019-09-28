@@ -7,7 +7,6 @@ import (
 
 	data "./data"
 	// timeline "./timeline"
-	web "./web"
 )
 
 var router *gin.Engine
@@ -38,41 +37,48 @@ func main() {
 
 	api := router.Group("/api")
 	{
-		storyEndpoint := api.Group("/story")
+		adminGroup := api.Group("/admin")
 		{
-			storyEndpoint.POST("/", web.CreateStory)
-			storyEndpoint.GET("/:id", web.GetStory)
-			storyEndpoint.GET("/:id/choice", web.GetStoryChoices)
-			storyEndpoint.PUT("/:id", web.UpdateStory)
-			storyEndpoint.PUT("/:id/choice/:choiceid", web.AddChoiceToStory)
-			storyEndpoint.DELETE("/:id", web.DeleteStory)
+			storyEndpoint := adminGroup.Group("/story")
+			{
+				storyEndpoint.POST("/", admin.CreateStory)
+				storyEndpoint.GET("/:id", admin.GetStory)
+				storyEndpoint.GET("/:id/choice", admin.GetStoryChoices)
+				storyEndpoint.PUT("/:id", admin.UpdateStory)
+				storyEndpoint.PUT("/:id/choice/:choiceid", admin.AddChoiceToStory)
+				storyEndpoint.DELETE("/:id", admin.DeleteStory)
+			}
+			choiceEndpoint := adminGroup.Group("/choice")
+			{
+				choiceEndpoint.POST("/", admin.CreateChoice)
+				choiceEndpoint.GET("/:id", admin.GetChoice)
+				// choiceEndpoint.GET("/:id/cost", admin.GetChoiceCosts)
+				// choiceEndpoint.GET("/:id/reward", admin.GetChoiceRewards)
+				// choiceEndpoint.GET("/:id/requirement", admin.GetChoiceRewards)
+				choiceEndpoint.PUT("/:id", admin.UpdateChoice)
+				// choiceEndpoint.PUT("/:id/cost", admin.UpdateChoiceCosts)
+				// choiceEndpoint.PUT("/:id/reward", admin.UpdateChoiceRewards)
+				// choiceEndpoint.PUT("/:id/requirement", admin.UpdateChoiceRequirements)
+				choiceEndpoint.DELETE("/:id", admin.DeleteChoice)
+			}
+			itemEndpoint := adminGroup.Group("/item")
+			{
+				itemEndpoint.POST("/", admin.CreateItem)
+				itemEndpoint.GET("/:id", admin.GetItem)
+				itemEndpoint.PUT("/:id", admin.UpdateItem)
+				itemEndpoint.DELETE("/:id", admin.DeleteItem)
+			}
 		}
-		choiceEndpoint := api.Group("/choice")
+
+		userGroup := api.Group("/user")
 		{
-			choiceEndpoint.POST("/", web.CreateChoice)
-			choiceEndpoint.GET("/:id", web.GetChoice)
-			// choiceEndpoint.GET("/:id/cost", web.GetChoiceCosts)
-			// choiceEndpoint.GET("/:id/reward", web.GetChoiceRewards)
-			// choiceEndpoint.GET("/:id/requirement", web.GetChoiceRewards)
-			choiceEndpoint.PUT("/:id", web.UpdateChoice)
-			// choiceEndpoint.PUT("/:id/cost", web.UpdateChoiceCosts)
-			// choiceEndpoint.PUT("/:id/reward", web.UpdateChoiceRewards)
-			// choiceEndpoint.PUT("/:id/requirement", web.UpdateChoiceRequirements)
-			choiceEndpoint.DELETE("/:id", web.DeleteChoice)
-		}
-		itemEndpoint := api.Group("/item")
-		{
-			itemEndpoint.POST("/", web.CreateItem)
-			itemEndpoint.GET("/:id", web.GetItem)
-			itemEndpoint.PUT("/:id", web.UpdateItem)
-			itemEndpoint.DELETE("/:id", web.DeleteItem)
-		}
-		accountEndpoint := api.Group("/account")
-		{
-			accountEndpoint.POST("/sign", web.SignIn)
-			accountEndpoint.POST("/log", web.LogIn)
-			// accountEndpoint.PUT("/:id", web.UpdateAccount)
-			// accountEndpoint.DELETE("/:id", web.DeactivateAccount)
+			accountEndpoint := userGroup.Group("/account")
+			{
+				accountEndpoint.POST("/sign", user.SignIn)
+				accountEndpoint.POST("/log", user.LogIn)
+				// accountEndpoint.PUT("/:id", user.UpdateAccount)
+				// accountEndpoint.DELETE("/:id", user.DeactivateAccount)
+			}
 		}
 	}
 
