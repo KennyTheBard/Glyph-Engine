@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "./data"
+	// timeline "./timeline"
 	web "./web"
 )
 
@@ -17,6 +18,21 @@ func main() {
 
 	data.Init(*cleanStart)
 	defer data.Close()
+
+	// tm := timeline.NewTimeMachine()
+	// tm.Start()
+
+	// duration, _ := time.ParseDuration("10s")
+	// tm.AddTimePoint(timeline.TimePoint{
+	// 	Point:    time.Now().Add(duration),
+	// 	WaitTime: duration,
+	// 	IsRepetable: func() bool {
+	// 		return true
+	// 	},
+	// 	Action: func() {
+	// 		fmt.Println("Hello there!")
+	// 	},
+	// })
 
 	router = gin.Default()
 
@@ -74,4 +90,7 @@ func main() {
 	// port.Import("test_export.txt", 100, func(bs []byte) {
 	// 	fmt.Println(string(bs))
 	// })
+
+	// tm.Stop()
+
 }
