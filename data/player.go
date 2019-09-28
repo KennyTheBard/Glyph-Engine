@@ -7,14 +7,14 @@ type PlayerModel struct {
 	ID          uint   `json:"id" 		gorm:"primary_key"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
-	CurrStoryID uint   `json: "curr_story_id`
+	CurrStoryID uint   `json:"curr_story_id`
 }
 
 func (player PlayerModel) ToDto() (ret struct {
 	ID          uint   `json:"id" 		gorm:"primary_key"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
-	CurrStoryID uint   `json: "curr_story_id`
+	CurrStoryID uint   `json:"curr_story_id`
 }) {
 	ret.ID = player.ID
 	ret.Username = player.Username

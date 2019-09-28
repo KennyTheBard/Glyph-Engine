@@ -1,13 +1,13 @@
-package web
+package user
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
-	data "../data"
-	security "../security"
-	util "../util"
+	data "../../data"
+	security "../../security"
+	util "../../util"
 )
 
 func SignIn(context *gin.Context) {
@@ -50,8 +50,12 @@ func LogIn(context *gin.Context) {
 	}
 
 	if security.CheckPasswordHash(logInData.Password, player.Password) {
-		context.JSON(http.StatusCreated, gin.H{"status": http.StatusOK, "message": "Logged into your account successfully!", "accessToken": security.Authorizate(player.username)})
+		context.JSON(http.StatusCreated, gin.H{
+			"status":      http.StatusOK,
+			"message":     "Logged into your account successfully!",
+			"accessToken": security.Authorizate(player.Username),
+		})
 	} else {
-		context.JSON(http.StatusCreated, gin.H{"status": http.StatusBadRequest, "message": "Wrong username or password!"})
+		util.StatusResponse(context, http.StatusCreated, "Wrong username or password!")
 	}
 }

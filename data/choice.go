@@ -8,7 +8,7 @@ type ChoiceModel struct {
 	Name          string `json:"name"`
 	Text          string `json:"text"`
 	EnergyCost    uint   `json:energyCost`
-	ParentStoryID uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
+	ParentStoryID uint   `json:"parentStoryID" 		gorm:"column:parent_story_id"`
 	NextStoryID   uint   `json:"nextStoryID" 		gorm:"column:next_story_id"`
 }
 

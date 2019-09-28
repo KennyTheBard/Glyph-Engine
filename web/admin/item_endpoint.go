@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	data "../data"
-	util "../util"
+	data "../../data"
+	util "../../util"
 )
 
 // CreateItem creates an item

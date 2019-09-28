@@ -7,6 +7,8 @@ import (
 
 	data "./data"
 	// timeline "./timeline"
+	admin "./web/admin"
+	user "./web/user"
 )
 
 var router *gin.Engine
@@ -78,6 +80,11 @@ func main() {
 				accountEndpoint.POST("/log", user.LogIn)
 				// accountEndpoint.PUT("/:id", user.UpdateAccount)
 				// accountEndpoint.DELETE("/:id", user.DeactivateAccount)
+			}
+			gameEndpoint := userGroup.Group("/game")
+			{
+				gameEndpoint.GET("/", user.GetCurrentStory)
+				gameEndpoint.POST("/", user.MakeChoice)
 			}
 		}
 	}
