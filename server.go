@@ -13,7 +13,7 @@ import (
 var router *gin.Engine
 
 func main() {
-	cleanStart := flag.Bool("cleanStart", false, "If the connection to the database should make sure the database is empty")
+	cleanStart := flag.Bool("cleanStart", false, "clean init the database")
 	flag.Parse()
 
 	data.Init(*cleanStart)
