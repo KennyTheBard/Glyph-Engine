@@ -10,7 +10,7 @@ func GenerateRandomBytes(n int) []byte {
 
 func GenerateRandomToken(n int) string {
 	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	bytes, _ := GenerateRandomBytes(n)
+	bytes := GenerateRandomBytes(n)
 	for i, b := range bytes {
 		bytes[i] = letters[b%byte(len(letters))]
 	}
