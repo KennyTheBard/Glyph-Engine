@@ -13,19 +13,15 @@ type ChoiceModel struct {
 }
 
 func (choice ChoiceModel) ToDto() (ret struct {
-	ID            uint   `json:"id"`
-	Name          string `json:"name"`
-	Text          string `json:"text"`
-	EnergyCost    uint   `json:energyCost`
-	ParentStoryID uint   `json:"parentStoryID"`
-	NextStoryID   uint   `json:"nextStoryID"`
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	Text       string `json:"text"`
+	EnergyCost uint   `json:energyCost`
 }) {
 	ret.ID = choice.ID
 	ret.Name = choice.Name
 	ret.Text = choice.Text
 	ret.EnergyCost = choice.EnergyCost
-	ret.ParentStoryID = choice.ParentStoryID
-	ret.NextStoryID = choice.NextStoryID
 
 	return
 }

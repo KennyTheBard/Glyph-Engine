@@ -4,19 +4,22 @@ import "errors"
 
 // PlayerModel is the main element of a page
 type PlayerModel struct {
-	ID       uint   `json:"id" 		gorm:"primary_key"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID          uint   `json:"id" 		gorm:"primary_key"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	CurrStoryID uint   `json: "curr_story_id`
 }
 
 func (player PlayerModel) ToDto() (ret struct {
-	ID       uint   `json:"id" 		gorm:"primary_key"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID          uint   `json:"id" 		gorm:"primary_key"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	CurrStoryID uint   `json: "curr_story_id`
 }) {
 	ret.ID = player.ID
 	ret.Username = player.Username
 	ret.Password = player.Password
+	ret.CurrStoryID = player.CurrStoryID
 
 	return
 }
@@ -52,6 +55,12 @@ func (player *PlayerModel) GetInventory() []ItemStack {
 	var stacks []ItemStack
 	DB.Where("owner_id = ? and type = ?", player.ID, OWNER_PLAYER).Find(&stacks)
 	return stacks
+}
+
+func (player *PlayerModel) GetCurrentStory() StoryModel {
+	var story StoryModel
+	story.FindById(player.CurrStoryID)
+	return story
 }
 
 func (player *PlayerModel) UpdateField(fieldName string, fieldValue interface{}) error {
