@@ -7,6 +7,7 @@ import (
 
 	data "./data"
 	// timeline "./timeline"
+	security "./security"
 	admin "./web/admin"
 	user "./web/user"
 )
@@ -36,6 +37,7 @@ func main() {
 	// })
 
 	router = gin.Default()
+	router.Use(security.CORSMiddleware())
 
 	api := router.Group("/api")
 	{
