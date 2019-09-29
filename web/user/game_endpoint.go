@@ -36,7 +36,11 @@ func GetCurrentStory(context *gin.Context) {
 	story := player.GetCurrentStory()
 
 	// TODO: return story dtos
-	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "story": story.ToDto(), "choices": story.GetChoices()})
+	context.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"story":   story.ToDto(),
+		"choices": story.GetChoices(),
+	})
 }
 
 func MakeChoice(context *gin.Context) {
