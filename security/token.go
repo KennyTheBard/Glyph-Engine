@@ -4,7 +4,9 @@ import "crypto/rand"
 
 func GenerateRandomBytes(n int) []byte {
 	bs := make([]byte, n)
-	rand.Read(bs)
+	if n, err := rand.Read(bs); n == 0 || err != nil {
+		return nil
+	}
 	return bs
 }
 
