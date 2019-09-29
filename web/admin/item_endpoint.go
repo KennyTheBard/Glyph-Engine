@@ -88,6 +88,10 @@ func DeleteItem(context *gin.Context) {
 		return
 	}
 
-	item.Delete()
+	if err := item.Delete(); err != nil {
+		context.JSON(http.StatusOK, gin.H{"status": http.StatusInternalServerError, "message": err.Error()})
+		return
+	}
+
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Item deleted successfully!"})
 }

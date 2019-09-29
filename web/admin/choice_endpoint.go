@@ -90,6 +90,10 @@ func DeleteChoice(context *gin.Context) {
 		return
 	}
 
-	choice.Delete()
+	if err := choice.Delete(); err != nil {
+		context.JSON(http.StatusOK, gin.H{"status": http.StatusInternalServerError, "message": err.Error()})
+		return
+	}
+
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Choice deleted successfully!"})
 }

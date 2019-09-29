@@ -124,9 +124,8 @@ func AddChoiceToStory(context *gin.Context) {
 	}
 
 	choice.ParentStoryID = story.ID
-	choice.Save()
-	if err != nil {
-		util.StatusResponse(context, http.StatusInternalServerError, "Failed to create new choice!")
+	if err := choice.Save(); err != nil {
+		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -147,6 +146,10 @@ func DeleteStory(context *gin.Context) {
 		return
 	}
 
-	story.Delete()
+	if err := story.Delete(); err != nil {
+		context.JSON(http.StatusOK, gin.H{"status": http.StatusInternalServerError, "message": err.Error()})
+		return
+	}
+
 	util.StatusResponse(context, http.StatusOK, "Story deleted successfully!")
 }
