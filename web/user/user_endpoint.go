@@ -11,21 +11,21 @@ import (
 )
 
 func SignIn(context *gin.Context) {
-	var player data.PlayerModel
-	if err := context.BindJSON(&player); err != nil {
+	var user data.UserModel
+	if err := context.BindJSON(&user); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	var aux data.PlayerModel
-	if aux.FindByUsername(player.Username) == nil {
+	var aux data.UserModel
+	if aux.FindByUsername(user.Username) == nil {
 		util.StatusResponse(context, http.StatusConflict, "Username already in use!")
 		return
 	}
 
 	// TODO: add account validator through wrapper function
 	var err error
-	player.Password, err = security.HashPassword(player.Password)
+	user.Password, err = security.HashPassword(user.Password)
 
 	if err != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
@@ -33,9 +33,10 @@ func SignIn(context *gin.Context) {
 	}
 
 	// replace thid hardcoded value with configurable one
-	player.CurrStoryID = 1
+	user.CurrStoryID = 1
+	user.UserType = "admin"
 
-	if err = player.Save(); err != nil {
+	if err = user.Save(); err != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -43,23 +44,23 @@ func SignIn(context *gin.Context) {
 }
 
 func LogIn(context *gin.Context) {
-	var logInData data.PlayerModel
+	var logInData data.UserModel
 	if err := context.BindJSON(&logInData); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
 
-	var player data.PlayerModel
-	if player.FindByUsername(logInData.Username) != nil {
+	var user data.UserModel
+	if user.FindByUsername(logInData.Username) != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Wrong username or password!")
 		return
 	}
 
-	if security.CheckPasswordHash(logInData.Password, player.Password) {
+	if security.CheckPasswordHash(logInData.Password, user.Password) {
 		context.JSON(http.StatusCreated, gin.H{
 			"status":      http.StatusOK,
 			"message":     "Logged into your account successfully!",
-			"accessToken": security.Authorizate(player.Username),
+			"accessToken": security.Authorizate(user.Username),
 		})
 	} else {
 		util.StatusResponse(context, http.StatusCreated, "Wrong username or password!")

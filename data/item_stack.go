@@ -4,7 +4,7 @@ import "errors"
 
 const (
 	OWNER_CHOICE = 1
-	OWNER_PLAYER = 2
+	OWNER_USER   = 2
 )
 
 // ItemStack is a pair of an stack and a number of said items

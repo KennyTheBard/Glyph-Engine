@@ -10,7 +10,7 @@ type ChoiceModel struct {
 	EnergyCost         uint   `json:energyCost`
 	ParentStoryID      uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
 	NextStoryScript    string `							gorm:"column:next_story_script"`
-	DefaultNextStoryID uint   `json:"nextStoryID" 		gorm:"column:next_story_id"`
+	DefaultNextStoryID uint   `json:"nextStoryID" 		gorm:"column:default_next_story_id"`
 }
 
 func (choice ChoiceModel) ToDto() (ret struct {

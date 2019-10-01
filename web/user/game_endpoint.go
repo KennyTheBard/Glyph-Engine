@@ -27,13 +27,13 @@ func GetCurrentStory(context *gin.Context) {
 		return
 	}
 
-	var player data.PlayerModel
-	if player.FindByUsername(username) != nil {
+	var user data.UserModel
+	if user.FindByUsername(username) != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, "Unknown username!")
 		return
 	}
 
-	story := player.GetCurrentStory()
+	story := user.GetCurrentStory()
 
 	// TODO: return story dtos
 	context.JSON(http.StatusOK, gin.H{
@@ -60,8 +60,8 @@ func MakeChoice(context *gin.Context) {
 		return
 	}
 
-	var player data.PlayerModel
-	if player.FindByUsername(username) != nil {
+	var user data.UserModel
+	if user.FindByUsername(username) != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, "Unknown username!")
 		return
 	}
@@ -78,13 +78,13 @@ func MakeChoice(context *gin.Context) {
 		return
 	}
 
-	story := player.GetCurrentStory()
+	story := user.GetCurrentStory()
 	if choice.ParentStoryID != story.ID {
 		util.StatusResponse(context, http.StatusForbidden, "You cannot choose this story")
 		return
 	}
 
-	if err := player.UpdateField("curr_story_id", choice.NextStoryID); err != nil {
+	if err := user.UpdateField("curr_story_id", choice.GetNextStory()); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}

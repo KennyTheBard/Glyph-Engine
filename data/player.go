@@ -2,82 +2,83 @@ package data
 
 import "errors"
 
-// PlayerModel is the main element of a page
-type PlayerModel struct {
+// UserModel is the main element of a page
+type UserModel struct {
 	ID          uint   `json:"id" 		gorm:"primary_key"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
-	CurrStoryID uint   `json:"curr_story_id`
+	UserType    string
+	CurrStoryID uint `json:"curr_story_id`
 }
 
-func (player PlayerModel) ToDto() (ret struct {
+func (user UserModel) ToDto() (ret struct {
 	ID          uint   `json:"id" 		gorm:"primary_key"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
 	CurrStoryID uint   `json:"curr_story_id`
 }) {
-	ret.ID = player.ID
-	ret.Username = player.Username
-	ret.Password = player.Password
-	ret.CurrStoryID = player.CurrStoryID
+	ret.ID = user.ID
+	ret.Username = user.Username
+	ret.Password = user.Password
+	ret.CurrStoryID = user.CurrStoryID
 
 	return
 }
 
-func (player *PlayerModel) Save() error {
-	DB.Save(player)
+func (user *UserModel) Save() error {
+	DB.Save(user)
 	return nil
 }
 
-func (player *PlayerModel) FindById(id uint) error {
+func (user *UserModel) FindById(id uint) error {
 	if id == 0 {
 		return errors.New("ID's must be positive numbers")
 	}
 
-	DB.First(player, id)
-	if player.ID != id {
-		return errors.New("No player found with the given ID")
+	DB.First(user, id)
+	if user.ID != id {
+		return errors.New("No user found with the given ID")
 	}
 
 	return nil
 }
 
-func (player *PlayerModel) FindByUsername(username string) error {
-	DB.Where("username = ?", username).First(player)
-	if player.Username != username {
-		return errors.New("No player found with the given ID")
+func (user *UserModel) FindByUsername(username string) error {
+	DB.Where("username = ?", username).First(user)
+	if user.Username != username {
+		return errors.New("No user found with the given ID")
 	}
 
 	return nil
 }
 
-func (player *PlayerModel) GetInventory() []ItemStack {
+func (user *UserModel) GetInventory() []ItemStack {
 	var stacks []ItemStack
-	DB.Where("owner_id = ? and type = ?", player.ID, OWNER_PLAYER).Find(&stacks)
+	DB.Where("owner_id = ? and type = ?", user.ID, OWNER_USER).Find(&stacks)
 	return stacks
 }
 
-func (player *PlayerModel) GetCurrentStory() StoryModel {
+func (user *UserModel) GetCurrentStory() StoryModel {
 	var story StoryModel
-	story.FindById(player.CurrStoryID)
+	story.FindById(user.CurrStoryID)
 	return story
 }
 
-func (player *PlayerModel) UpdateField(fieldName string, fieldValue interface{}) error {
-	DB.Model(player).Update(fieldName, fieldValue)
+func (user *UserModel) UpdateField(fieldName string, fieldValue interface{}) error {
+	DB.Model(user).Update(fieldName, fieldValue)
 
 	return nil
 }
 
-func (player *PlayerModel) UpdateFields(fields map[string]interface{}) error {
+func (user *UserModel) UpdateFields(fields map[string]interface{}) error {
 	for name, value := range fields {
-		DB.Model(player).Update(name, value)
+		DB.Model(user).Update(name, value)
 	}
 
 	return nil
 }
 
-func (player *PlayerModel) Delete() error {
-	DB.Delete(player)
+func (user *UserModel) Delete() error {
+	DB.Delete(user)
 	return nil
 }

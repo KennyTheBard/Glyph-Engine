@@ -22,14 +22,14 @@ func Init(cleanStart bool) {
 		DB.DropTableIfExists(&ChoiceModel{})
 		DB.DropTableIfExists(&ItemModel{})
 		DB.DropTableIfExists(&ItemStack{})
-		DB.DropTableIfExists(&PlayerModel{})
+		DB.DropTableIfExists(&UserModel{})
 	}
 
 	DB.AutoMigrate(&StoryModel{})
 	DB.AutoMigrate(&ChoiceModel{})
 	DB.AutoMigrate(&ItemModel{})
 	DB.AutoMigrate(&ItemStack{})
-	DB.AutoMigrate(&PlayerModel{})
+	DB.AutoMigrate(&UserModel{})
 }
 
 func Close() {
