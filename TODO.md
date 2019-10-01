@@ -1,9 +1,15 @@
 # TODO
 
-- [ ] write an abstract assembler with reflection
-- [x] make conversion to DTOs as a struct method
-- [ ] add a capture error function to clean some of the code
-- [x] replace dtos with anonymous structs and maps
-- [ ] replace update functions with non generalized ones
-- [x] Add struct methods for models to get related data
-- [ ] Create a global timer responsible to handle regaining of energy
+## Features
+- [ ] Validators for accounts, stories, etc
+- [ ] Assemblers for slices of objects
+- [ ] Add graphics to choices, players, stories, items, etc
+- [ ] Configuration loader
+
+## Bugs
+
+## Reduce codebase
+- [ ] Write an abstract assembler with reflection
+- [ ] Capture error function to clean some of the code
+- [ ] Replace update functions with a call for a non-generalized one
+- [ ] Method to overload content from and object of the same type in case of not null
