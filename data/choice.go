@@ -4,12 +4,13 @@ import "errors"
 
 // ChoiceModel is the main subelement of the page
 type ChoiceModel struct {
-	ID            uint   `json:"id" 				gorm:"primary_key"`
-	Name          string `json:"name"`
-	Text          string `json:"text"`
-	EnergyCost    uint   `json:energyCost`
-	ParentStoryID uint   `json:"parentStoryID" 		gorm:"column:parent_story_id"`
-	NextStoryID   uint   `json:"nextStoryID" 		gorm:"column:next_story_id"`
+	ID                 uint   `json:"id" 				gorm:"primary_key"`
+	Name               string `json:"name"`
+	Text               string `json:"text"`
+	EnergyCost         uint   `json:energyCost`
+	ParentStoryID      uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
+	NextStoryScript    string `							gorm:"column:next_story_script"`
+	DefaultNextStoryID uint   `json:"nextStoryID" 		gorm:"column:next_story_id"`
 }
 
 func (choice ChoiceModel) ToDto() (ret struct {
@@ -46,7 +47,7 @@ func (choice *ChoiceModel) FindById(id uint) error {
 
 func (choice *ChoiceModel) GetNextStory() StoryModel {
 	var story StoryModel
-	DB.First(&story, choice.NextStoryID)
+	DB.First(&story, choice.DefaultNextStoryID)
 	return story
 }
 
