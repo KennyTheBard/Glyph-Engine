@@ -7,6 +7,7 @@ import (
 
 	data "./data"
 	// timeline "./timeline"
+
 	security "./security"
 	admin "./web/admin"
 	user "./web/user"
@@ -35,6 +36,8 @@ func main() {
 	// 		fmt.Println("Hello there!")
 	// 	},
 	// })
+
+	// config.LoadConfig("test_configuration.txt")
 
 	router = gin.Default()
 	router.Use(security.CORSMiddleware())
