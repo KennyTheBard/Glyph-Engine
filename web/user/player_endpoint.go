@@ -35,7 +35,10 @@ func SignIn(context *gin.Context) {
 	// replace thid hardcoded value with configurable one
 	player.CurrStoryID = 1
 
-	player.Save()
+	if err = player.Save(); err != nil {
+		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
 	context.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Account created successfully!"})
 }
 

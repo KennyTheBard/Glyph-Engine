@@ -73,7 +73,10 @@ func MakeChoice(context *gin.Context) {
 	}
 
 	var choice data.ChoiceModel
-	choice.FindById(recievedChoice.ID)
+	if err := choice.FindById(recievedChoice.ID); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	story := player.GetCurrentStory()
 	if choice.ParentStoryID != story.ID {
@@ -81,7 +84,10 @@ func MakeChoice(context *gin.Context) {
 		return
 	}
 
-	player.UpdateField("curr_story_id", choice.NextStoryID)
+	if err := player.UpdateField("curr_story_id", choice.NextStoryID); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
 }
