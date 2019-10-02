@@ -8,6 +8,7 @@ import (
 
 	data "../../data"
 	util "../../util"
+	validator "../../validator"
 )
 
 // CreateChoice creates a choice
@@ -15,6 +16,11 @@ func CreateChoice(context *gin.Context) {
 	var choice data.ChoiceModel
 	if err := context.BindJSON(&choice); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(choice); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -48,6 +54,11 @@ func UpdateChoice(context *gin.Context) {
 	var updateChoice data.ChoiceModel
 	if err := context.BindJSON(&updateChoice); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(updateChoice); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 

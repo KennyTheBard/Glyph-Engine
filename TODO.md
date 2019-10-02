@@ -1,7 +1,7 @@
 # TODO
 
 ## Features
-- [ ] Validators for accounts, stories, etc
+- [x] Validators for accounts, stories, etc
 - [ ] Assemblers for slices of objects
 - [ ] Add graphics to choices, players, stories, items, etc
 - [x] Configuration loader

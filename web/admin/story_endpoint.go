@@ -8,6 +8,7 @@ import (
 
 	data "../../data"
 	util "../../util"
+	validator "../../validator"
 )
 
 // CreateStory creates a story
@@ -15,6 +16,11 @@ func CreateStory(context *gin.Context) {
 	var story data.StoryModel
 	if err := context.BindJSON(&story); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(story); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -71,6 +77,11 @@ func UpdateStory(context *gin.Context) {
 	var updatedStory data.StoryModel
 	if err := context.BindJSON(&updatedStory); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(updatedStory); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 

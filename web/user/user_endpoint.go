@@ -8,11 +8,12 @@ import (
 	data "../../data"
 	security "../../security"
 	util "../../util"
+	validator "../../validator"
 )
 
 func SignIn(context *gin.Context) {
 	var user data.UserModel
-	if err := context.BindJSON(&user); err != nil {
+	if context.BindJSON(&user) != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
 		return
 	}
@@ -23,10 +24,13 @@ func SignIn(context *gin.Context) {
 		return
 	}
 
-	// TODO: add account validator through wrapper function
+	if err := validator.Validate(user); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	var err error
 	user.Password, err = security.HashPassword(user.Password)
-
 	if err != nil {
 		util.StatusResponse(context, http.StatusInternalServerError, err.Error())
 		return

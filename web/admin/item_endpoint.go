@@ -8,6 +8,7 @@ import (
 
 	data "../../data"
 	util "../../util"
+	validator "../../validator"
 )
 
 // CreateItem creates an item
@@ -15,6 +16,11 @@ func CreateItem(context *gin.Context) {
 	var item data.ItemModel
 	if err := context.BindJSON(&item); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(item); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -48,6 +54,11 @@ func UpdateItem(context *gin.Context) {
 	var updateItem data.ItemModel
 	if err := context.BindJSON(&updateItem); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, "Missing or incorrect object sent!")
+		return
+	}
+
+	if err := validator.Validate(updateItem); err != nil {
+		util.StatusResponse(context, http.StatusBadRequest, err.Error())
 		return
 	}
 
