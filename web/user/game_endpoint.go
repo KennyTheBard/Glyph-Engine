@@ -33,7 +33,11 @@ func GetCurrentStory(context *gin.Context) {
 		return
 	}
 
-	story := user.GetCurrentStory()
+	story, err := user.GetCurrentStory()
+	if err != nil {
+		util.StatusResponse(context, http.StatusInternalServerError, "No current story has been found!")
+		return
+	}
 
 	// TODO: return story dtos
 	context.JSON(http.StatusOK, gin.H{
@@ -78,8 +82,11 @@ func MakeChoice(context *gin.Context) {
 		return
 	}
 
-	story := user.GetCurrentStory()
-	if choice.ParentStoryID != story.ID {
+	story, err := user.GetCurrentStory()
+	if err != nil {
+		util.StatusResponse(context, http.StatusInternalServerError, "No current story has been found!")
+		return
+	} else if choice.ParentStoryID != story.ID {
 		util.StatusResponse(context, http.StatusForbidden, "You cannot choose this story")
 		return
 	}

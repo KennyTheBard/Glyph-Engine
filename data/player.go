@@ -40,8 +40,8 @@ func (user *UserModel) GetInventory() []ItemStack {
 	return stacks
 }
 
-func (user *UserModel) GetCurrentStory() StoryModel {
+func (user *UserModel) GetCurrentStory() (StoryModel, error) {
 	var story StoryModel
-	story.FindById(user.CurrStoryID)
-	return story
+	err := story.FindById(user.CurrStoryID)
+	return story, err
 }
