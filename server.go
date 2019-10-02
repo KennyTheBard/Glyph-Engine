@@ -7,11 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	data "./data"
-	// timeline "./timeline"
-
 	config "./config"
+	data "./data"
 	security "./security"
+	tline "./timeline"
 	admin "./web/admin"
 	user "./web/user"
 )
@@ -34,11 +33,12 @@ func main() {
 		}
 	}
 
-	// tm := timeline.NewTimeMachine()
-	// tm.Start()
+	tline.Timeline.Init()
+	tline.Timeline.Start()
+	defer tline.Timeline.Stop()
 
-	// duration, _ := time.ParseDuration("10s")
-	// tm.AddTimePoint(timeline.TimePoint{
+	// duration, _ := time.ParseDuration("1s")
+	// tline.Timeline.AddTimePoint(tline.TimePoint{
 	// 	Point:    time.Now().Add(duration),
 	// 	WaitTime: duration,
 	// 	IsRepetable: func() bool {
@@ -48,8 +48,6 @@ func main() {
 	// 		fmt.Println("Hello there!")
 	// 	},
 	// })
-
-	// config.LoadConfig("test_configuration.txt")
 
 	router = gin.Default()
 	router.Use(security.CORSMiddleware())
@@ -120,7 +118,5 @@ func main() {
 	// port.Import("test_export.txt", 100, func(bs []byte) {
 	// 	fmt.Println(string(bs))
 	// })
-
-	// tm.Stop()
 
 }

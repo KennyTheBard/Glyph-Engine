@@ -7,16 +7,16 @@ import (
 
 type TimeMachine struct {
 	ticker   *time.Ticker
-	timeHeap TimeHeap
+	timeHeap *TimeHeap
 	done     chan bool
 }
 
-func NewTimeMachine() *TimeMachine {
-	var timeMachine TimeMachine
-	heap.Init(&timeMachine.timeHeap)
-	timeMachine.done = make(chan bool)
+var Timeline TimeMachine
 
-	return &timeMachine
+func (tm *TimeMachine) Init() {
+	tm.timeHeap = new(TimeHeap)
+	heap.Init(tm.timeHeap)
+	tm.done = make(chan bool)
 }
 
 func (tm *TimeMachine) Start() {
@@ -28,12 +28,12 @@ func (tm *TimeMachine) Start() {
 			case <-tm.done:
 				return
 			case t := <-tm.ticker.C:
-				for tm.timeHeap.Peek().Point.Before(t) {
-					tp := heap.Pop(&tm.timeHeap).(TimePoint)
+				for tm.timeHeap.Len() > 0 && tm.timeHeap.Peek().Point.Before(t) {
+					tp := heap.Pop(tm.timeHeap).(TimePoint)
 					tp.Action()
 
 					if tp.IsRepetable() {
-						heap.Push(&tm.timeHeap, TimePoint{
+						heap.Push(tm.timeHeap, TimePoint{
 							Point:       time.Now().Add(tp.WaitTime),
 							WaitTime:    tp.WaitTime,
 							IsRepetable: tp.IsRepetable,
@@ -47,7 +47,7 @@ func (tm *TimeMachine) Start() {
 }
 
 func (tm *TimeMachine) AddTimePoint(tp TimePoint) {
-	heap.Push(&tm.timeHeap, tp)
+	heap.Push(tm.timeHeap, tp)
 }
 
 func (tm *TimeMachine) Stop() {
