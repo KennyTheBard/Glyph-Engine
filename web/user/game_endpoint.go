@@ -39,11 +39,16 @@ func GetCurrentStory(context *gin.Context) {
 		return
 	}
 
-	// TODO: return story dtos
+	choices := story.GetChoices()
+	chociesDto := make([]interface{}, len(choices))
+	for i, choice := range choices {
+		chociesDto[i] = choice.ToDto()
+	}
+
 	context.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"story":   story.ToDto(),
-		"choices": story.GetChoices(),
+		"choices": chociesDto,
 	})
 }
 
