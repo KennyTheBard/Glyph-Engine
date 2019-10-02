@@ -7,7 +7,16 @@ import (
 )
 
 func LoadConfig(fileName string) error {
-	return port.Import(fileName, 100, func(bs []byte) {
-		json.Unmarshal(bs, &GlobalConfiguration)
-	})
+	var err error
+	if err = port.Import(fileName, 100, func(bs []byte) {
+		if json.Unmarshal(bs, &GlobalConfiguration) != nil {
+			GlobalConfiguration.StartingStoryID = 0
+			GlobalConfiguration.Port = 8080
+		}
+	}); err != nil {
+		GlobalConfiguration.StartingStoryID = 0
+		GlobalConfiguration.Port = 8080
+	}
+
+	return err
 }

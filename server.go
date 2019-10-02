@@ -2,12 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	data "./data"
 	// timeline "./timeline"
 
+	config "./config"
 	security "./security"
 	admin "./web/admin"
 	user "./web/user"
@@ -17,10 +20,19 @@ var router *gin.Engine
 
 func main() {
 	cleanStart := flag.Bool("cleanStart", false, "clean init the database")
+	configFile := flag.String("config", "", "path to the config file")
 	flag.Parse()
 
 	data.Init(*cleanStart)
 	defer data.Close()
+
+	if config.LoadConfig(*configFile) != nil {
+		if len(*configFile) == 0 {
+			fmt.Println("No configuration file was given, starting on default configurations")
+		} else {
+			fmt.Println("Failed to read given configuration file, starting on default configurations")
+		}
+	}
 
 	// tm := timeline.NewTimeMachine()
 	// tm.Start()
@@ -94,7 +106,7 @@ func main() {
 		}
 	}
 
-	if err := router.Run(); err != nil {
+	if err := router.Run(":" + strconv.Itoa(int(config.GlobalConfiguration.Port))); err != nil {
 		panic(err)
 	}
 

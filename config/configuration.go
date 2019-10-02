@@ -1,8 +1,8 @@
 package config
 
 type Configuration struct {
-	StartingStoryID uint   `json:"startingStoryID"`
-	DefaultPort     string `json:"defaultPort"`
+	StartingStoryID uint `json:"startingStoryID"`
+	Port            uint `json:"port"`
 }
 
 var GlobalConfiguration Configuration
