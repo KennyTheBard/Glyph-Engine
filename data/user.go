@@ -36,7 +36,7 @@ func (user *UserModel) FindByUsername(username string) error {
 
 func (user *UserModel) GetInventory() []ItemStack {
 	var stacks []ItemStack
-	DB.Where("owner_id = ? and type = ?", user.ID, OWNER_USER).Find(&stacks)
+	DB.Where("owner_id = ? and owner_type = ?", user.ID, OWNER_USER).Find(&stacks)
 	return stacks
 }
 
