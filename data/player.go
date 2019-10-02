@@ -4,7 +4,7 @@ import "errors"
 
 // UserModel is the main element of a page
 type UserModel struct {
-	ID          uint   `json:"id" 		gorm:"primary_key"`
+	BaseEntity
 	Username    string `json:"username"`
 	Password    string `json:"password"`
 	UserType    string
@@ -12,7 +12,7 @@ type UserModel struct {
 }
 
 func (user UserModel) ToDto() (ret struct {
-	ID          uint   `json:"id" 		gorm:"primary_key"`
+	ID          uint   `json:"id"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
 	CurrStoryID uint   `json:"curr_story_id`
@@ -23,24 +23,6 @@ func (user UserModel) ToDto() (ret struct {
 	ret.CurrStoryID = user.CurrStoryID
 
 	return
-}
-
-func (user *UserModel) Save() error {
-	DB.Save(user)
-	return nil
-}
-
-func (user *UserModel) FindById(id uint) error {
-	if id == 0 {
-		return errors.New("ID's must be positive numbers")
-	}
-
-	DB.First(user, id)
-	if user.ID != id {
-		return errors.New("No user found with the given ID")
-	}
-
-	return nil
 }
 
 func (user *UserModel) FindByUsername(username string) error {
@@ -62,23 +44,4 @@ func (user *UserModel) GetCurrentStory() StoryModel {
 	var story StoryModel
 	story.FindById(user.CurrStoryID)
 	return story
-}
-
-func (user *UserModel) UpdateField(fieldName string, fieldValue interface{}) error {
-	DB.Model(user).Update(fieldName, fieldValue)
-
-	return nil
-}
-
-func (user *UserModel) UpdateFields(fields map[string]interface{}) error {
-	for name, value := range fields {
-		DB.Model(user).Update(name, value)
-	}
-
-	return nil
-}
-
-func (user *UserModel) Delete() error {
-	DB.Delete(user)
-	return nil
 }
