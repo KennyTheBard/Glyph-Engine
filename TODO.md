@@ -6,6 +6,7 @@
 - [x] Configuration loader
 - [ ] Table for scripts
 - [ ] Interpreter tree for scripts
+- [ ] Resolutions to choices
 
 ## Bugs
 
