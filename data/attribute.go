@@ -1,6 +1,10 @@
 package data
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 // attribute is the principal form of resource in the game
 type AttributeModel struct {
@@ -10,18 +14,14 @@ type AttributeModel struct {
 	Type string `json:"type`
 }
 
-func (attribute AttributeModel) ToDto() (ret struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-	Text string `json:"text"`
-	Type string `json:"type`
-}) {
-	ret.ID = attribute.ID
-	ret.Name = attribute.Name
-	ret.Text = attribute.Text
-	ret.Type = attribute.Type
+func (attribute AttributeModel) ToDto() gin.H {
+	ret := make(gin.H)
+	ret["id"] = attribute.ID
+	ret["name"] = attribute.Name
+	ret["text"] = attribute.Text
+	ret["type"] = attribute.Type
 
-	return
+	return ret
 }
 
 // CRUD methods

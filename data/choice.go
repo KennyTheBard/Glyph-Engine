@@ -1,6 +1,10 @@
 package data
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 // ChoiceModel is the main subelement of the page
 type ChoiceModel struct {
@@ -8,21 +12,23 @@ type ChoiceModel struct {
 	Name               string `json:"name"`
 	Text               string `json:"text"`
 	ParentStoryID      uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
-	NextStoryScript    string `							gorm:"column:next_story_script"`
 	DefaultNextStoryID uint   `json:"nextStoryID" 		gorm:"column:default_next_story_id"`
 }
 
-func (choice ChoiceModel) ToDto() (ret struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-	Text string `json:"text"`
-}) {
-	ret.ID = choice.ID
-	ret.Name = choice.Name
-	ret.Text = choice.Text
+// DTO methods
 
-	return
+func (choice ChoiceModel) ToDto() gin.H {
+	ret := make(gin.H)
+	ret["id"] = choice.ID
+	ret["name"] = choice.Name
+	ret["text"] = choice.Text
+	ret["parentStoryID"] = choice.ParentStoryID
+	ret["nextStoryID"] = choice.DefaultNextStoryID
+
+	return ret
 }
+
+// Useful methods
 
 func (choice *ChoiceModel) GetNextStory() StoryModel {
 	var story StoryModel
@@ -32,7 +38,7 @@ func (choice *ChoiceModel) GetNextStory() StoryModel {
 
 func (choice *ChoiceModel) GetAttributeStacks() []AttributeStack {
 	var stacks []AttributeStack
-	DB.Where("owner_id = ? and type = ?", choice.ID, OWNER_CHOICE).Find(&stacks)
+	DB.Where("owner_id = ? and type = ?", choice.ID, "choice").Find(&stacks)
 	return stacks
 }
 

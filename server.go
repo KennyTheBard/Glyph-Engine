@@ -78,12 +78,12 @@ func main() {
 				// choiceEndpoint.PUT("/:id/requirement", admin.UpdateChoiceRequirements)
 				choiceEndpoint.DELETE("/:id", admin.DeleteChoice)
 			}
-			itemEndpoint := adminGroup.Group("/item")
+			attributeEndpoint := adminGroup.Group("/attribute")
 			{
-				itemEndpoint.POST("/", admin.CreateAttribute)
-				itemEndpoint.GET("/:id", admin.GetAttribute)
-				itemEndpoint.PUT("/:id", admin.UpdateAttribute)
-				itemEndpoint.DELETE("/:id", admin.DeleteAttribute)
+				attributeEndpoint.POST("/", admin.CreateAttribute)
+				attributeEndpoint.GET("/:id", admin.GetAttribute)
+				attributeEndpoint.PUT("/:id", admin.UpdateAttribute)
+				attributeEndpoint.DELETE("/:id", admin.DeleteAttribute)
 			}
 		}
 

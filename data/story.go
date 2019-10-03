@@ -1,6 +1,10 @@
 package data
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 // Story is the main element of a page
 type StoryModel struct {
@@ -9,17 +13,18 @@ type StoryModel struct {
 	Text string `json:"text"`
 }
 
-func (story StoryModel) ToDto() (ret struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-	Text string `json:"text"`
-}) {
-	ret.ID = story.ID
-	ret.Name = story.Name
-	ret.Text = story.Text
+// DTO methods
 
-	return
+func (story StoryModel) ToDto() gin.H {
+	ret := make(gin.H)
+	ret["id"] = story.ID
+	ret["name"] = story.Name
+	ret["text"] = story.Text
+
+	return ret
 }
+
+// Useful methods
 
 func (story *StoryModel) GetChoices() []ChoiceModel {
 	var choices []ChoiceModel

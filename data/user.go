@@ -1,29 +1,32 @@
 package data
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 // UserModel is the main element of a page
 type UserModel struct {
 	ID          uint   `json:"id" gorm:"primary_key"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
-	UserType    string
-	CurrStoryID uint `json:"curr_story_id`
+	UserType    string `json:"userType`
+	CurrStoryID uint   `json:"currStoryID"`
 }
 
-func (user UserModel) ToDto() (ret struct {
-	ID          uint   `json:"id"`
-	Username    string `json:"username"`
-	Password    string `json:"password"`
-	CurrStoryID uint   `json:"curr_story_id`
-}) {
-	ret.ID = user.ID
-	ret.Username = user.Username
-	ret.Password = user.Password
-	ret.CurrStoryID = user.CurrStoryID
+// DTO methods
 
-	return
+func (user UserModel) ToDto() gin.H {
+	ret := make(gin.H)
+	ret["id"] = user.ID
+	ret["username"] = user.Username
+	ret["currStoryID"] = user.CurrStoryID
+
+	return ret
 }
+
+// Useful methods
 
 func (user *UserModel) FindByUsername(username string) error {
 	DB.Where("username = ?", username).First(user)
@@ -36,7 +39,7 @@ func (user *UserModel) FindByUsername(username string) error {
 
 func (user *UserModel) GetInventory() []AttributeStack {
 	var stacks []AttributeStack
-	DB.Where("owner_id = ? and owner_type = ?", user.ID, OWNER_USER).Find(&stacks)
+	DB.Where("owner_id = ? and owner_type = ?", user.ID, "user").Find(&stacks)
 	return stacks
 }
 

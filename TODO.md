@@ -13,4 +13,4 @@
 ## Refactor
 - [ ] Write an abstract assembler with reflection
 - [x] Rename "Item" to "Attribute"
-- [ ] Replace DTOs with maps (test it)
+- [x] Replace DTOs with maps (test it)

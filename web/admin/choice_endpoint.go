@@ -79,7 +79,6 @@ func UpdateChoice(context *gin.Context) {
 		"text":                  updateChoice.Text,
 		"parent_story_id":       updateChoice.ParentStoryID,
 		"default_next_story_id": updateChoice.DefaultNextStoryID,
-		"next_story_script":     updateChoice.NextStoryScript,
 	}); err != nil {
 		util.StatusResponse(context, http.StatusNotFound, err.Error())
 		return

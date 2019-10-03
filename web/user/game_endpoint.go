@@ -40,7 +40,7 @@ func GetCurrentStory(context *gin.Context) {
 	}
 
 	choices := story.GetChoices()
-	chociesDto := make([]interface{}, len(choices))
+	chociesDto := make([]gin.H, len(choices))
 	for i, choice := range choices {
 		chociesDto[i] = choice.ToDto()
 	}

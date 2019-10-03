@@ -1,10 +1,9 @@
 package data
 
-import "errors"
+import (
+	"errors"
 
-const (
-	OWNER_CHOICE = 1
-	OWNER_USER   = 2
+	"github.com/gin-gonic/gin"
 )
 
 // AttributeStack is a pair of an stack and a number of said items
@@ -17,22 +16,16 @@ type AttributeStack struct {
 	OwnerType   string `json:"ownerType" 		gorm:"column:owner_type"`
 }
 
-func (stack AttributeStack) ToDto() (ret struct {
-	ID          uint   `json:"id"`
-	Number      uint   `json:"number"`
-	StackType   string `json:"stackType"`
-	AttributeID uint   `json:"attributeID"`
-	OwnerID     uint   `json:"ownerID"`
-	OwnerType   string `json:"ownerType`
-}) {
-	ret.ID = stack.ID
-	ret.Number = stack.Number
-	ret.StackType = stack.StackType
-	ret.AttributeID = stack.AttributeID
-	ret.OwnerID = stack.OwnerID
-	ret.OwnerType = stack.OwnerType
+func (stack AttributeStack) ToDto() gin.H {
+	ret := make(gin.H)
+	ret["id"] = stack.ID
+	ret["number"] = stack.Number
+	ret["stackType"] = stack.StackType
+	ret["attributeID"] = stack.AttributeID
+	ret["ownerID"] = stack.OwnerID
+	ret["ownerType"] = stack.OwnerType
 
-	return
+	return ret
 }
 
 func (stack *AttributeStack) GetAttribute() (AttributeModel, error) {
