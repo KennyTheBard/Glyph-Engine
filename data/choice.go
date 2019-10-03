@@ -30,8 +30,8 @@ func (choice *ChoiceModel) GetNextStory() StoryModel {
 	return story
 }
 
-func (choice *ChoiceModel) GetItemStacks() []ItemStack {
-	var stacks []ItemStack
+func (choice *ChoiceModel) GetAttributeStacks() []AttributeStack {
+	var stacks []AttributeStack
 	DB.Where("owner_id = ? and type = ?", choice.ID, OWNER_CHOICE).Find(&stacks)
 	return stacks
 }

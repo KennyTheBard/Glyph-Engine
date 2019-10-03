@@ -80,10 +80,10 @@ func main() {
 			}
 			itemEndpoint := adminGroup.Group("/item")
 			{
-				itemEndpoint.POST("/", admin.CreateItem)
-				itemEndpoint.GET("/:id", admin.GetItem)
-				itemEndpoint.PUT("/:id", admin.UpdateItem)
-				itemEndpoint.DELETE("/:id", admin.DeleteItem)
+				itemEndpoint.POST("/", admin.CreateAttribute)
+				itemEndpoint.GET("/:id", admin.GetAttribute)
+				itemEndpoint.PUT("/:id", admin.UpdateAttribute)
+				itemEndpoint.DELETE("/:id", admin.DeleteAttribute)
 			}
 		}
 

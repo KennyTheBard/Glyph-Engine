@@ -20,15 +20,15 @@ func Init(cleanStart bool) {
 	if cleanStart {
 		DB.DropTableIfExists(&StoryModel{})
 		DB.DropTableIfExists(&ChoiceModel{})
-		DB.DropTableIfExists(&ItemModel{})
-		DB.DropTableIfExists(&ItemStack{})
+		DB.DropTableIfExists(&AttributeModel{})
+		DB.DropTableIfExists(&AttributeStack{})
 		DB.DropTableIfExists(&UserModel{})
 	}
 
 	DB.AutoMigrate(&StoryModel{})
 	DB.AutoMigrate(&ChoiceModel{})
-	DB.AutoMigrate(&ItemModel{})
-	DB.AutoMigrate(&ItemStack{})
+	DB.AutoMigrate(&AttributeModel{})
+	DB.AutoMigrate(&AttributeStack{})
 	DB.AutoMigrate(&UserModel{})
 }
 
