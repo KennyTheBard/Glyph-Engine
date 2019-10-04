@@ -51,14 +51,14 @@ func main() {
 
 	// root := exp.BooleanExpression{
 	// 	arith.BinaryArithmeticExpression{
-	// 		arith.SingularArithmeticExpression{120},
-	// 		arith.SingularArithmeticExpression{6},
+	// 		arith.ValueArithmeticExpression{120},
+	// 		arith.ValueArithmeticExpression{6},
 	// 		arith.DIVISION,
 	// 	},
 	// 	arith.MultiArithmeticExpression{
 	// 		[]arith.ArithmeticExpression{
-	// 			arith.SingularArithmeticExpression{8},
-	// 			arith.SingularArithmeticExpression{15},
+	// 			arith.ValueArithmeticExpression{8},
+	// 			arith.ValueArithmeticExpression{15},
 	// 		},
 	// 		arith.ADDITION,
 	// 	},
