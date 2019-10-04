@@ -49,6 +49,23 @@ func main() {
 	// 	},
 	// })
 
+	// root := exp.BooleanExpression{
+	// 	arith.BinaryArithmeticExpression{
+	// 		arith.SingularArithmeticExpression{120},
+	// 		arith.SingularArithmeticExpression{6},
+	// 		arith.DIVISION,
+	// 	},
+	// 	arith.MultiArithmeticExpression{
+	// 		[]arith.ArithmeticExpression{
+	// 			arith.SingularArithmeticExpression{8},
+	// 			arith.SingularArithmeticExpression{15},
+	// 		},
+	// 		arith.ADDITION,
+	// 	},
+	// 	exp.LESSER_THAN,
+	// }
+	// fmt.Println(root.Evaluate())
+
 	router = gin.Default()
 	router.Use(security.CORSMiddleware())
 

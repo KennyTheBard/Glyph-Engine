@@ -4,8 +4,8 @@
 - [x] Validators for accounts, stories, etc
 - [ ] Graphics to choices, players, stories, items, etc
 - [x] Configuration loader
-- [ ] Table for scripts
-- [ ] Interpreter tree for scripts
+- [x] Evaluation tree for scripts
+- [ ] Interpret script and create evaluation tree
 - [x] Resolutions to choices
 
 ## Bugs
