@@ -6,10 +6,11 @@ import (
 
 const (
 	EQUAL                 = 0
-	GREATER_THAN          = 1
-	GREATER_OR_EQUAL_THAN = 2
-	LESSER_THAN           = 3
-	LESSER_OR_EQUAL_THAN  = 4
+	NOT_EQUAL             = 1
+	GREATER_THAN          = 2
+	GREATER_OR_EQUAL_THAN = 3
+	LESSER_THAN           = 4
+	LESSER_OR_EQUAL_THAN  = 5
 )
 
 type BooleanExpression struct {
@@ -25,6 +26,8 @@ func (exp BooleanExpression) Evaluate() bool {
 	switch exp.ExpressionType {
 	case EQUAL:
 		return left == right
+	case NOT_EQUAL:
+		return left != right
 	case GREATER_THAN:
 		return left > right
 	case GREATER_OR_EQUAL_THAN:

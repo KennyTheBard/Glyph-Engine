@@ -2,9 +2,9 @@ package arithmetic
 
 type QueryArithmeticExpression struct {
 	QueryFunc func(string) int
-	Query     string
+	Statement string
 }
 
 func (exp QueryArithmeticExpression) Calculate() int {
-	return exp.QueryFunc(exp.Query)
+	return exp.QueryFunc(exp.Statement)
 }
