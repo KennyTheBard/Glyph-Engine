@@ -16,7 +16,7 @@ const (
 type BooleanExpression struct {
 	Left           arith.ArithmeticExpression
 	Right          arith.ArithmeticExpression
-	ExpressionType uint
+	ExpressionType int
 }
 
 func (exp BooleanExpression) Evaluate() bool {

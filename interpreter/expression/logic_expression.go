@@ -8,7 +8,7 @@ const (
 
 type LogicExpression struct {
 	Subs           []Expression
-	ExpressionType uint
+	ExpressionType int
 }
 
 func (exp LogicExpression) Evaluate() bool {

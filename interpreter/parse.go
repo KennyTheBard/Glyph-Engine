@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	exp "./expression"
+	arith "./expression/arithmetic"
 )
 
 type Branch struct {
@@ -76,10 +77,25 @@ func parseExpression(expText string) exp.Expression {
 	} else {
 		var expression exp.BooleanExpression
 
+		indexes := FindStrings(expText, BOOL_DELIMITATORS)
+		if length := len(indexes); length > 1 {
+			return expression // treat error
+		} else if length < 1 {
+			return expression // treat error
+		}
+
+		expression.Left = parseArithmeticExpression(expText[:indexes[0]])
+		expression.Right = parseArithmeticExpression(expText[indexes[0]+2:])
 		for i, delim := range BOOL_DELIMITATORS {
-			if 
+			if delim == expText[indexes[0]:indexes[0]+2] {
+				expression.ExpressionType = i
+			}
 		}
 
 		return expression
 	}
+}
+
+func parseArithmeticExpression(expTest string) arith.ArithmeticExpression {
+
 }
