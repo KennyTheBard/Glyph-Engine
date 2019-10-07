@@ -10,7 +10,6 @@ import (
 	config "./config"
 	data "./data"
 	security "./security"
-	tline "./timeline"
 	admin "./web/admin"
 	user "./web/user"
 )
@@ -33,12 +32,12 @@ func main() {
 		}
 	}
 
-	tline.Timeline.Init()
-	tline.Timeline.Start()
-	defer tline.Timeline.Stop()
+	// tm.Machine.Init()
+	// tm.Machine.Start()
+	// defer tm.Machine.Stop()
 
 	// duration, _ := time.ParseDuration("1s")
-	// tline.Timeline.AddTimePoint(tline.TimePoint{
+	// tm.Machine.AddTimePoint(tm.TimePoint{
 	// 	Point:    time.Now().Add(duration),
 	// 	WaitTime: duration,
 	// 	IsRepetable: func() bool {
