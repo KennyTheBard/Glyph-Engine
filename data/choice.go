@@ -8,11 +8,11 @@ import (
 
 // ChoiceModel is the main subelement of the page
 type ChoiceModel struct {
-	ID                 uint   `json:"id" gorm:"primary_key"`
-	Name               string `json:"name"`
-	Text               string `json:"text"`
-	ParentStoryID      uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
-	DefaultNextStoryID uint   `json:"nextStoryID" 		gorm:"column:default_next_story_id"`
+	ID            uint   `json:"id" gorm:"primary_key"`
+	Name          string `json:"name"`
+	Text          string `json:"text"`
+	ParentStoryID uint   `json:"parentStoryID" 	gorm:"column:parent_story_id"`
+	ChoiceScript  string `json:"choiceScript" 		gorm:"column:choice_script"`
 }
 
 // DTO methods
@@ -23,23 +23,23 @@ func (choice ChoiceModel) ToDto() gin.H {
 	ret["name"] = choice.Name
 	ret["text"] = choice.Text
 	ret["parentStoryID"] = choice.ParentStoryID
-	ret["nextStoryID"] = choice.DefaultNextStoryID
+	ret["choiceScript"] = choice.ChoiceScript
 
 	return ret
 }
 
 // Useful methods
 
-func (choice *ChoiceModel) GetNextStory() StoryModel {
-	var story StoryModel
-	DB.First(&story, choice.DefaultNextStoryID)
-	return story
-}
-
 func (choice *ChoiceModel) GetAttributeStacks() []AttributeStack {
 	var stacks []AttributeStack
 	DB.Where("owner_id = ? and type = ?", choice.ID, "choice").Find(&stacks)
 	return stacks
+}
+
+func (choice *ChoiceModel) GetAttribute(attribute_name, stackType string) AttributeStack {
+	var stack AttributeStack
+	DB.Joins("JOIN attribute_model ON attribute_models.id = stacks.attribute_id AND attribute_models.name = ?", attribute_name).Where("owner_id = ? and owner_type = ? and stack_type = ?", choice.ID, "choice", stackType).First(&stack)
+	return stack
 }
 
 // CRUD methods

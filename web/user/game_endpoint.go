@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	data "../../data"
+	interpreter "../../interpreter"
 	security "../../security"
 	util "../../util"
 )
@@ -95,6 +96,12 @@ func MakeChoice(context *gin.Context) {
 		util.StatusResponse(context, http.StatusForbidden, "You cannot choose this story")
 		return
 	}
+
+	// add other steps
+	interpreter.Preparse(choice.ChoiceScript, interpreter.ExecutionContext{
+		User:   user,
+		Choice: choice,
+	})
 
 	if err := user.UpdateField("curr_story_id", choice.GetNextStory()); err != nil {
 		util.StatusResponse(context, http.StatusBadRequest, err.Error())

@@ -8,12 +8,12 @@ import (
 
 // AttributeStack is a pair of an stack and a number of said items
 type AttributeStack struct {
-	ID          uint   `json:"id" gorm:"primary_key"`
+	ID          uint   `json:"id" 				gorm:"primary_key"`
 	Number      uint   `json:"number"`
-	StackType   string `json:"stackType" 		gorm:"column:stack_type`
-	AttributeID uint   `json:"attributeID" 		gorm:"column:attribute_id"`
-	OwnerID     uint   `json:"ownerID" 		gorm:"column:owner_id"`
-	OwnerType   string `json:"ownerType" 		gorm:"column:owner_type"`
+	StackType   string `json:"stackType" 		gorm:"unique_index:unique_attribute_stack column:stack_type`
+	AttributeID uint   `json:"attributeID" 		gorm:"unique_index:unique_attribute_stack column:attribute_id"`
+	OwnerID     uint   `json:"ownerID" 			gorm:"unique_index:unique_attribute_stack column:owner_id"`
+	OwnerType   string `json:"ownerType" 		gorm:"unique_index:unique_attribute_stack column:owner_type"`
 }
 
 // DTO methods

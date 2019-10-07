@@ -43,6 +43,12 @@ func (user *UserModel) GetInventory() []AttributeStack {
 	return stacks
 }
 
+func (user *UserModel) GetAttribute(attribute_name, stackType string) AttributeStack {
+	var stack AttributeStack
+	DB.Joins("JOIN attribute_model ON attribute_models.id = stacks.attribute_id AND attribute_models.name = ?", attribute_name).Where("owner_id = ? and owner_type = ? and stack_type = ?", user.ID, "user", stackType).First(&stack)
+	return stack
+}
+
 func (user *UserModel) GetCurrentStory() (StoryModel, error) {
 	var story StoryModel
 	err := story.FindById(user.CurrStoryID)
