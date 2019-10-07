@@ -32,6 +32,9 @@ func main() {
 		}
 	}
 
+	// interpreter.Randomize()
+	// fmt.Println(interpreter.Preparse("10 + D3 + D20*2", interpreter.ExecutionContext{}))
+
 	// tm.Machine.Init()
 	// tm.Machine.Start()
 	// defer tm.Machine.Stop()

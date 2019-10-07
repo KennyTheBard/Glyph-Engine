@@ -16,6 +16,8 @@ type AttributeStack struct {
 	OwnerType   string `json:"ownerType" 		gorm:"column:owner_type"`
 }
 
+// DTO methods
+
 func (stack AttributeStack) ToDto() gin.H {
 	ret := make(gin.H)
 	ret["id"] = stack.ID
@@ -27,6 +29,8 @@ func (stack AttributeStack) ToDto() gin.H {
 
 	return ret
 }
+
+// Useful methods
 
 func (stack *AttributeStack) GetAttribute() (AttributeModel, error) {
 	var attribute AttributeModel

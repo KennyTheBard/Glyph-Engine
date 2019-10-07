@@ -14,6 +14,8 @@ type AttributeModel struct {
 	Type string `json:"type`
 }
 
+// DTO methods
+
 func (attribute AttributeModel) ToDto() gin.H {
 	ret := make(gin.H)
 	ret["id"] = attribute.ID
