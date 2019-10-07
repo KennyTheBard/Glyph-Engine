@@ -16,6 +16,9 @@ const LOGIC_AND_DELIM = "&&"
 // boolean expressions delimitators
 var BOOL_DELIMITATORS []string = []string{"==", "!=", ">>", ">=", "<<", "<="}
 
+// multi operator arithmetic operations
+var MULTI_ARITHMETIC_DELIMITERS []rune = []rune{'+', '-'}
+
 func ContainsRunes(delimiters []rune) func(rune) bool {
 	return func(r rune) bool {
 		for _, delim := range delimiters {
