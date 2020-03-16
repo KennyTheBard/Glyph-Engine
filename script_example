@@ -1,2 +1,0 @@
-($USER.owned["STR"] - 10) / 2 + D20 > $CHOICE.challenge["STR"] ? next_story1
-$USER.owned["gold"] > 300 ? next_story2 : <<lose 300 gold>>;
