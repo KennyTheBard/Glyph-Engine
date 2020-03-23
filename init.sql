@@ -1,8 +1,9 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  first_name varchar,
-  last_name varchar,
+  -- first_name varchar,
+  -- last_name varchar,
   username varchar,
+  password varchar,
   registration_date date
 );
 
@@ -26,13 +27,13 @@ CREATE TABLE users (
 --   "permission_id" int
 -- );
 
--- CREATE TABLE "stories" (
---   "id" SERIAL PRIMARY KEY,
---   "title" varchar,
---   "description" varchar,
---   "creation_date" date,
---   "author_id" int
--- );
+CREATE TABLE "stories" (
+  "id" SERIAL PRIMARY KEY,
+  "title" varchar,
+  "description" varchar,
+  -- "creation_date" date,
+  "author_id" int
+);
 
 -- CREATE TABLE "scenes" (
 --   "id" SERIAL PRIMARY KEY,
@@ -69,7 +70,7 @@ CREATE TABLE users (
 
 -- ALTER TABLE "roles_to_permissions" ADD FOREIGN KEY ("permission_id") REFERENCES "permissions" ("id");
 
--- ALTER TABLE "stories" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
+ALTER TABLE "stories" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
 
 -- ALTER TABLE "scenes" ADD FOREIGN KEY ("story_id") REFERENCES "stories" ("id");
 

@@ -6,13 +6,15 @@ import (
 
 	u "glyph/user"
 
+	"github.com/gin-gonic/gin"
+
 	_ "github.com/lib/pq"
 )
 
 const (
 	host     = "localhost"
 	port     = 54321
-	user 	 = "postgres"
+	user     = "postgres"
 	password = "password"
 	dbname   = "glyphdb"
 )
@@ -29,25 +31,17 @@ func main() {
 	}
 	defer db.Close()
 
-	s := u.NewService(db)
-	s.Insert("Example")
-	fmt.Println(s.Get(1))
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
-	// // database connection
-	// db, err := sql.Open("pq",
-	// 	"user:password@tcp(127.0.0.1:3306)/hello")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer db.Close()
+	api := r.Group("/api")
+	{
+		user := api.Group("/user")
+		{
+			u.Endpoint(db, user)
+		}
+	}
 
-	// r := chi.NewRouter()
-
-	// r.Use(middleware.Timeout(60 * time.Second))
-
-	// r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Write([]byte("hi"))
-	// })
-
-	// http.ListenAndServe(":8080", r)
+	r.Run(":8080")
 }
