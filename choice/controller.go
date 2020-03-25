@@ -12,24 +12,25 @@ import (
 
 var sceneService *Service
 
-type SceneDTO struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	Text    string `form:"text"`
-	StoryId int    `json:"story_id" binding:"required"`
+type ChoiceDTO struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Text      string `form:"text"`
+	SceneId   int    `json:"scene_id" binding:"required"`
+	NextScene int    `json:"next_scene" binding:"required"`
 }
 
 func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 	sceneService = NewService(db)
 
-	rg.POST("/", createScene)
-	rg.GET("/", getAllScenes)
-	rg.GET("/:id", getScene)
-	rg.PUT("/", updateScene)
-	rg.DELETE("/", deleteScene)
+	rg.POST("/", createChoice)
+	rg.GET("/", getAllChoices)
+	rg.GET("/:id", getChoice)
+	rg.PUT("/", updateChoice)
+	rg.DELETE("/", deleteChoice)
 }
 
-func createScene(ctx *gin.Context) {
+func createChoice(ctx *gin.Context) {
 	var dto SceneDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -41,13 +42,13 @@ func createScene(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully created"})
 }
 
-func getAllScenes(ctx *gin.Context) {
+func getAllChoices(ctx *gin.Context) {
 	all := sceneService.GetAll()
 
 	ctx.JSON(http.StatusOK, all)
 }
 
-func getScene(ctx *gin.Context) {
+func getChoice(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -59,7 +60,7 @@ func getScene(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto)
 }
 
-func updateScene(ctx *gin.Context) {
+func updateChoice(ctx *gin.Context) {
 	var dto StoryDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -76,7 +77,7 @@ func updateScene(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
 
-func deleteScene(ctx *gin.Context) {
+func deleteChoice(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

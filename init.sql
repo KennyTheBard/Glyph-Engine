@@ -48,14 +48,13 @@ CREATE TABLE "scenes" (
 --   "scene_id" int
 -- );
 
--- CREATE TABLE "choices" (
---   "id" SERIAL PRIMARY KEY,
---   "name" varchar,
---   "text" varchar,
---   "scene_id" int,
---   "next_scene" int
--- );
-
+CREATE TABLE "choices" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar,
+  "text" varchar,
+  "scene_id" int,
+  "next_scene" int
+);
 
 -- ALTER TABLE "users_to_roles" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
@@ -75,7 +74,7 @@ ALTER TABLE "scenes" ADD FOREIGN KEY ("story_id") REFERENCES "stories" ("id");
 
 -- ALTER TABLE "user_progress" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
 
--- ALTER TABLE "choices" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
+ALTER TABLE "choices" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
 
--- ALTER TABLE "choices" ADD FOREIGN KEY ("next_scene") REFERENCES "scenes" ("id");
+ALTER TABLE "choices" ADD FOREIGN KEY ("next_scene") REFERENCES "scenes" ("id");
 
