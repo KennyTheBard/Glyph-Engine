@@ -19,11 +19,11 @@ type UserDTO struct {
 func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 	userService = NewService(db)
 
-	rg.POST("/register", RegisterEndpoint)
-	rg.POST("/login")
+	rg.POST("/register", registerEndpoint)
+	rg.POST("/login", loginEndpoint)
 }
 
-func RegisterEndpoint(ctx *gin.Context) {
+func registerEndpoint(ctx *gin.Context) {
 	var dto UserDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -42,10 +42,10 @@ func RegisterEndpoint(ctx *gin.Context) {
 
 	userService.Register(dto.Username, dto.Password)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully registered"})
+	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully registered"})
 }
 
-func LoginEndpoint(ctx *gin.Context) {
+func loginEndpoint(ctx *gin.Context) {
 	var dto UserDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

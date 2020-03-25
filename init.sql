@@ -1,10 +1,10 @@
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   -- first_name varchar,
   -- last_name varchar,
-  username varchar,
-  password varchar,
-  registration_date date
+  "username" varchar,
+  "password" varchar,
+  "registration_date" date
 );
 
 -- CREATE TABLE roles (

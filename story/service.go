@@ -3,6 +3,8 @@ package story
 import (
 	"database/sql"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Service struct {
@@ -16,7 +18,7 @@ func NewService(db *sql.DB) *Service {
 	return s
 }
 
-func (s Service) Insert(title, description string, authorId int) {
+func (s Service) Create(title, description string, authorId int) {
 	_, err := s.db.Exec("INSERT INTO stories (title, description, author_id) "+
 		"VALUES($1, $2, $3)", title, description, authorId)
 	if err != nil {
@@ -24,7 +26,7 @@ func (s Service) Insert(title, description string, authorId int) {
 	}
 }
 
-func (s Service) GetById(id int) map[string]interface{} {
+func (s Service) GetById(id int) gin.H {
 	var title, description string
 	var authorId int
 	err := s.db.QueryRow("SELECT title, description, author_id FROM stories WHERE id = $1", id).
@@ -33,21 +35,21 @@ func (s Service) GetById(id int) map[string]interface{} {
 		log.Fatal(err)
 	}
 
-	return map[string]interface{}{
+	return gin.H{
 		"title":       title,
 		"description": description,
 		"author_id":   authorId,
 	}
 }
 
-func (s Service) GetAll() []map[string]interface{} {
+func (s Service) GetAll() []gin.H {
 	rows, err := s.db.Query("SELECT title, description, author_id FROM stories")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	all := make([]map[string]interface{}, 0)
+	all := make([]gin.H, 0)
 	for rows.Next() {
 		var title, description string
 		var authorId int
@@ -56,7 +58,7 @@ func (s Service) GetAll() []map[string]interface{} {
 			log.Fatal(err)
 		}
 
-		all = append(all, map[string]interface{}{
+		all = append(all, gin.H{
 			"title":       title,
 			"description": description,
 			"author_id":   authorId,

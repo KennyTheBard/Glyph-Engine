@@ -34,9 +34,10 @@ func (s Service) Register(username, password string) {
 }
 
 func (s Service) Login(username, password string) bool {
+	var id int
 	var hashedPassword string
-	err := s.db.QueryRow("SELECT password FROM users WHERE username = &1", username).
-		Scan(&hashedPassword)
+	err := s.db.QueryRow("SELECT id, password FROM users WHERE username = &1", username).
+		Scan(&id, &hashedPassword)
 	if err != nil {
 		log.Fatal(err)
 	}
