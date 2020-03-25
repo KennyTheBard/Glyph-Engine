@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	st "glyph/story"
 	u "glyph/user"
 
 	"github.com/gin-gonic/gin"
@@ -37,10 +38,8 @@ func main() {
 
 	api := r.Group("/api")
 	{
-		user := api.Group("/user")
-		{
-			u.Endpoint(db, user)
-		}
+		u.Endpoint(db, api.Group("/user"))
+		st.Endpoint(db, api.Group("/story"))
 	}
 
 	r.Run(":8080")
