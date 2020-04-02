@@ -40,7 +40,11 @@ func registerEndpoint(ctx *gin.Context) {
 		return
 	}
 
-	userService.Register(dto.Username, dto.Password)
+	err := userService.Register(dto.Username, dto.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully registered"})
 }
@@ -52,7 +56,11 @@ func loginEndpoint(ctx *gin.Context) {
 		return
 	}
 
-	userService.Login(dto.Username, dto.Password)
+	err := userService.Login(dto.Username, dto.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully logged in"})
 }

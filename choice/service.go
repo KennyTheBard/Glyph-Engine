@@ -18,21 +18,23 @@ func NewService(db *sql.DB) *Service {
 	return s
 }
 
-func (s Service) Create(name, text string, sceneId, nextScene int) {
+func (s Service) Create(name, text string, sceneId, nextScene int) error {
 	_, err := s.db.Exec("INSERT INTO choices (name, text, scene_id, next_scene) "+
 		"VALUES($1, $2, $3, $4)", name, text, sceneId, nextScene)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
-func (s Service) GetById(id int) gin.H {
+func (s Service) GetById(id int) (gin.H, error) {
 	var name, text string
 	var sceneId, nextScene int
 	err := s.db.QueryRow("SELECT name, text, scene_id, next_scene FROM choices WHERE id = $1", id).
 		Scan(&name, &text, &sceneId, &nextScene)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return gin.H{
@@ -40,13 +42,13 @@ func (s Service) GetById(id int) gin.H {
 		"text":       text,
 		"scene_id":   sceneId,
 		"next_scene": nextScene,
-	}
+	}, nil
 }
 
-func (s Service) GetAll() []gin.H {
+func (s Service) GetAll() ([]gin.H, error) {
 	rows, err := s.db.Query("SELECT name, text, scene_id, next_scene FROM choices")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -68,23 +70,27 @@ func (s Service) GetAll() []gin.H {
 	}
 
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return all
+	return all, nil
 }
 
-func (s Service) Update(name, text string, sceneId, nextScene int) {
+func (s Service) Update(id int, name, text string, sceneId, nextScene int) error {
 	_, err := s.db.Exec("UPDATE choices SET title = $2, text = $3, story_id = $4, next_scene = $5 "+
 		"WHERE id = $1", id, name, text, sceneId, nextScene)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
-func (s Service) Delete(id int) {
+func (s Service) Delete(id int) error {
 	_, err := s.db.Exec("DELETE FROM choices WHERE id = $1", id)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

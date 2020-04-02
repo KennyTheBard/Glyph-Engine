@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 
 	"glyph/security"
@@ -20,29 +21,33 @@ func NewService(db *sql.DB) *Service {
 	return s
 }
 
-func (s Service) Register(username, password string) {
+func (s Service) Register(username, password string) error {
 	hashedPass, err := security.HashPassword(password)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = s.db.Exec("INSERT INTO users (username, password) VALUES($1, $2)",
+	_, err = s.db.Exec("INSERT INTO users (username, password_hash) VALUES($1, $2)",
 		username, hashedPass)
+
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
-func (s Service) Login(username, password string) bool {
+func (s Service) Login(username, password string) error {
 	var id int
 	var hashedPassword string
-	err := s.db.QueryRow("SELECT id, password FROM users WHERE username = &1", username).
+	err := s.db.QueryRow("SELECT id, password_hash FROM users WHERE username = $1", username).
 		Scan(&id, &hashedPassword)
-	if err != nil {
-		log.Fatal(err)
+
+	if err != nil || !security.CheckPasswordHash(password, hashedPassword) {
+		return errors.New("Username or password incorrect")
 	}
 
-	return security.CheckPasswordHash(password, hashedPassword)
+	return nil
 }
 
 func (s Service) GetById(id int) gin.H {

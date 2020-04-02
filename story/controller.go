@@ -13,7 +13,6 @@ import (
 var storyService *Service
 
 type StoryDTO struct {
-	Id          int    `json:"id"`
 	Title       string `json:"title" binding:"required"`
 	Description string `form:"description"`
 	AuthorId    int    `json:"author_id" binding:"required"`
@@ -25,8 +24,8 @@ func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 	rg.POST("/", createStory)
 	rg.GET("/", getAllStories)
 	rg.GET("/:id", getStory)
-	rg.PUT("/", updateStory)
-	rg.DELETE("/", deleteStory)
+	rg.PUT("/:id", updateStory)
+	rg.DELETE("/:id", deleteStory)
 }
 
 func createStory(ctx *gin.Context) {
@@ -36,13 +35,21 @@ func createStory(ctx *gin.Context) {
 		return
 	}
 
-	storyService.Create(dto.Title, dto.Description, dto.AuthorId)
+	err := storyService.Create(dto.Title, dto.Description, dto.AuthorId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully created"})
 }
 
 func getAllStories(ctx *gin.Context) {
-	all := storyService.GetAll()
+	all, err := storyService.GetAll()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, all)
 }
@@ -54,24 +61,32 @@ func getStory(ctx *gin.Context) {
 		return
 	}
 
-	dto := storyService.GetById(id)
+	dto, err := storyService.GetById(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, dto)
 }
 
 func updateStory(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Provide id of the entity to be updated"})
+		return
+	}
+
 	var dto StoryDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if dto.Id == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Provide id of the entity to be updated"})
+	if err = storyService.Update(id, dto.Title, dto.Description, dto.AuthorId); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	storyService.Update(dto.Id, dto.Title, dto.Description, dto.AuthorId)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
@@ -83,7 +98,10 @@ func deleteStory(ctx *gin.Context) {
 		return
 	}
 
-	storyService.Delete(id)
+	if err = storyService.Delete(id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted"})
 }

@@ -13,7 +13,6 @@ import (
 var sceneService *Service
 
 type SceneDTO struct {
-	Id      int    `json:"id"`
 	Title   string `json:"title"`
 	Text    string `form:"text"`
 	StoryId int    `json:"story_id" binding:"required"`
@@ -25,8 +24,8 @@ func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 	rg.POST("/", createScene)
 	rg.GET("/", getAllScenes)
 	rg.GET("/:id", getScene)
-	rg.PUT("/", updateScene)
-	rg.DELETE("/", deleteScene)
+	rg.PUT("/:id", updateScene)
+	rg.DELETE("/:id", deleteScene)
 }
 
 func createScene(ctx *gin.Context) {
@@ -42,7 +41,11 @@ func createScene(ctx *gin.Context) {
 }
 
 func getAllScenes(ctx *gin.Context) {
-	all := sceneService.GetAll()
+	all, err := sceneService.GetAll()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, all)
 }
@@ -54,24 +57,32 @@ func getScene(ctx *gin.Context) {
 		return
 	}
 
-	dto := sceneService.GetById(id)
+	dto, err := sceneService.GetById(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, dto)
 }
 
 func updateScene(ctx *gin.Context) {
-	var dto StoryDTO
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var dto SceneDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if dto.Id == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Provide id of the entity to be updated"})
+	if err = sceneService.Update(id, dto.Title, dto.Text, dto.StoryId); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	sceneService.Update(dto.Id, dto.Title, dto.Text, dto.StoryId)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
@@ -83,7 +94,10 @@ func deleteScene(ctx *gin.Context) {
 		return
 	}
 
-	sceneService.Delete(id)
+	if err = sceneService.Delete(id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted"})
 }

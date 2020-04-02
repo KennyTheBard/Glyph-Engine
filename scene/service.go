@@ -2,7 +2,9 @@ package story
 
 import (
 	"database/sql"
+	"errors"
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,31 +20,33 @@ func NewService(db *sql.DB) *Service {
 	return s
 }
 
-func (s Service) Create(title, text string, storyId int) {
+func (s Service) Create(title, text string, storyId int) error {
 	_, err := s.db.Exec("INSERT INTO scenes (title, text, story_id) "+
 		"VALUES($1, $2, $3)", title, text, storyId)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
-func (s Service) GetById(id int) gin.H {
+func (s Service) GetById(id int) (gin.H, error) {
 	var title, text string
 	var storyId int
 	err := s.db.QueryRow("SELECT title, text, story_id FROM scenes WHERE id = $1", id).
 		Scan(&title, &text, &storyId)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return gin.H{
 		"title":    title,
 		"text":     text,
 		"story_id": storyId,
-	}
+	}, nil
 }
 
-func (s Service) GetAll() []gin.H {
+func (s Service) GetAll() ([]gin.H, error) {
 	rows, err := s.db.Query("SELECT title, text, story_id FROM scenes")
 	if err != nil {
 		log.Fatal(err)
@@ -66,23 +70,37 @@ func (s Service) GetAll() []gin.H {
 	}
 
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return all
+	return all, nil
 }
 
-func (s Service) Update(id int, title, text string, storyId int) {
-	_, err := s.db.Exec("UPDATE scenes SET title = $2, text = $3, story_id = $4 "+
-		"WHERE id = $1", id, text, description, storyId)
+func (s Service) Update(id int, title, text string, storyId int) error {
+	result, err := s.db.Exec("UPDATE scenes SET title = $2, text = $3, story_id = $4 "+
+		"WHERE id = $1", id, title, text, storyId)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("No story found with given id: " + strconv.Itoa(id))
+	}
+
+	return nil
 }
 
-func (s Service) Delete(id int) {
-	_, err := s.db.Exec("DELETE FROM scenes WHERE id = $1", id)
+func (s Service) Delete(id int) error {
+	result, err := s.db.Exec("DELETE FROM scenes WHERE id = $1", id)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("No story found with given id: " + strconv.Itoa(id))
+	}
+
+	return nil
 }

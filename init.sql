@@ -1,10 +1,10 @@
 CREATE TABLE users (
-  "id" SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   -- first_name varchar,
   -- last_name varchar,
-  "username" varchar,
-  "password" varchar,
-  "registration_date" date
+  username varchar,
+  password_hash varchar,
+  registration_date date
 );
 
 -- CREATE TABLE roles (
@@ -27,19 +27,19 @@ CREATE TABLE users (
 --   "permission_id" int
 -- );
 
-CREATE TABLE "stories" (
-  "id" SERIAL PRIMARY KEY,
-  "title" varchar,
-  "description" varchar,
+CREATE TABLE stories (
+  id SERIAL PRIMARY KEY,
+  title varchar,
+  description varchar,
   -- "creation_date" date,
-  "author_id" int
+  author_id int
 );
 
-CREATE TABLE "scenes" (
-  "id" SERIAL PRIMARY KEY,
-  "title" varchar,
-  "text" varchar,
-  "story_id" int
+CREATE TABLE scenes (
+  id SERIAL PRIMARY KEY,
+  title varchar,
+  text varchar,
+  story_id int
 );
 
 -- CREATE TABLE "user_progress" (
@@ -48,12 +48,12 @@ CREATE TABLE "scenes" (
 --   "scene_id" int
 -- );
 
-CREATE TABLE "choices" (
-  "id" SERIAL PRIMARY KEY,
-  "name" varchar,
-  "text" varchar,
-  "scene_id" int,
-  "next_scene" int
+CREATE TABLE choices (
+  id SERIAL PRIMARY KEY,
+  title varchar,
+  text varchar,
+  scene_id int,
+  next_scene int
 );
 
 -- ALTER TABLE "users_to_roles" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
@@ -64,9 +64,9 @@ CREATE TABLE "choices" (
 
 -- ALTER TABLE "roles_to_permissions" ADD FOREIGN KEY ("permission_id") REFERENCES "permissions" ("id");
 
-ALTER TABLE "stories" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
+ALTER TABLE stories ADD FOREIGN KEY (author_id) REFERENCES users (id);
 
-ALTER TABLE "scenes" ADD FOREIGN KEY ("story_id") REFERENCES "stories" ("id");
+ALTER TABLE scenes ADD FOREIGN KEY (story_id) REFERENCES stories (id);
 
 -- ALTER TABLE "user_progress" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
@@ -74,7 +74,7 @@ ALTER TABLE "scenes" ADD FOREIGN KEY ("story_id") REFERENCES "stories" ("id");
 
 -- ALTER TABLE "user_progress" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
 
-ALTER TABLE "choices" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
+ALTER TABLE choices ADD FOREIGN KEY (scene_id) REFERENCES scenes (id);
 
-ALTER TABLE "choices" ADD FOREIGN KEY ("next_scene") REFERENCES "scenes" ("id");
+ALTER TABLE choices ADD FOREIGN KEY (next_scene) REFERENCES scenes (id);
 
