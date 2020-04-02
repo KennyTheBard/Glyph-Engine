@@ -3,7 +3,6 @@ package story
 import (
 	"database/sql"
 	"errors"
-	"log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +46,7 @@ func (s Service) GetById(id int) (gin.H, error) {
 }
 
 func (s Service) GetAll() ([]gin.H, error) {
-	rows, err := s.db.Query("SELECT title, description, author_id FROM stories")
+	rows, err := s.db.Query("SELECT id, title, description, author_id FROM stories")
 	if err != nil {
 		return nil, err
 	}
@@ -56,13 +55,14 @@ func (s Service) GetAll() ([]gin.H, error) {
 	all := make([]gin.H, 0)
 	for rows.Next() {
 		var title, description string
-		var authorId int
-		err = rows.Scan(&title, &description, &authorId)
+		var id, authorId int
+		err = rows.Scan(&id, &title, &description, &authorId)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 
 		all = append(all, gin.H{
+			"id":          id,
 			"title":       title,
 			"description": description,
 			"author_id":   authorId,

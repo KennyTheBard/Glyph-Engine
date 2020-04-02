@@ -2,7 +2,8 @@ package story
 
 import (
 	"database/sql"
-	"log"
+	"errors"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,35 +19,40 @@ func NewService(db *sql.DB) *Service {
 	return s
 }
 
-func (s Service) Create(name, text string, sceneId, nextScene int) error {
-	_, err := s.db.Exec("INSERT INTO choices (name, text, scene_id, next_scene) "+
-		"VALUES($1, $2, $3, $4)", name, text, sceneId, nextScene)
+func (s Service) Create(title, text string, sceneId, nextSceneId int) error {
+	result, err := s.db.Exec("INSERT INTO choices (title, text, scene_id, next_scene_id) "+
+		"VALUES($1, $2, $3, $4)", title, text, sceneId, nextSceneId)
 	if err != nil {
 		return err
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("Choice could not be saved")
 	}
 
 	return nil
 }
 
 func (s Service) GetById(id int) (gin.H, error) {
-	var name, text string
-	var sceneId, nextScene int
-	err := s.db.QueryRow("SELECT name, text, scene_id, next_scene FROM choices WHERE id = $1", id).
-		Scan(&name, &text, &sceneId, &nextScene)
+	var title, text string
+	var sceneId, nextSceneId int
+	err := s.db.QueryRow("SELECT title, text, scene_id, next_scene_id FROM choices WHERE id = $1", id).
+		Scan(&title, &text, &sceneId, &nextSceneId)
 	if err != nil {
 		return nil, err
 	}
 
 	return gin.H{
-		"name":       name,
-		"text":       text,
-		"scene_id":   sceneId,
-		"next_scene": nextScene,
+		"title":         title,
+		"text":          text,
+		"scene_id":      sceneId,
+		"next_scene_id": nextSceneId,
 	}, nil
 }
 
 func (s Service) GetAll() ([]gin.H, error) {
-	rows, err := s.db.Query("SELECT name, text, scene_id, next_scene FROM choices")
+	rows, err := s.db.Query("SELECT id, title, text, scene_id, next_scene_id FROM choices")
 	if err != nil {
 		return nil, err
 	}
@@ -54,18 +60,19 @@ func (s Service) GetAll() ([]gin.H, error) {
 
 	all := make([]gin.H, 0)
 	for rows.Next() {
-		var name, text string
-		var sceneId, nextScene int
-		err = rows.Scan(&name, &text, &sceneId, &nextScene)
+		var title, text string
+		var id, sceneId, nextSceneId int
+		err = rows.Scan(&id, &title, &text, &sceneId, &nextSceneId)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 
 		all = append(all, gin.H{
-			"name":       name,
-			"text":       text,
-			"scene_id":   sceneId,
-			"next_scene": nextScene,
+			"id":            id,
+			"title":         title,
+			"text":          text,
+			"scene_id":      sceneId,
+			"next_scene_id": nextSceneId,
 		})
 	}
 
@@ -76,20 +83,30 @@ func (s Service) GetAll() ([]gin.H, error) {
 	return all, nil
 }
 
-func (s Service) Update(id int, name, text string, sceneId, nextScene int) error {
-	_, err := s.db.Exec("UPDATE choices SET title = $2, text = $3, story_id = $4, next_scene = $5 "+
-		"WHERE id = $1", id, name, text, sceneId, nextScene)
+func (s Service) Update(id int, title, text string, sceneId, nextSceneId int) error {
+	result, err := s.db.Exec("UPDATE choices SET title = $2, text = $3, story_id = $4, next_scene_id = $5 "+
+		"WHERE id = $1", id, title, text, sceneId, nextSceneId)
 	if err != nil {
 		return err
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("No choice found with given id: " + strconv.Itoa(id))
 	}
 
 	return nil
 }
 
 func (s Service) Delete(id int) error {
-	_, err := s.db.Exec("DELETE FROM choices WHERE id = $1", id)
+	result, err := s.db.Exec("DELETE FROM choices WHERE id = $1", id)
 	if err != nil {
 		return err
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("No choice found with given id: " + strconv.Itoa(id))
 	}
 
 	return nil

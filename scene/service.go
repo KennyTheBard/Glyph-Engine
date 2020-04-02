@@ -21,10 +21,15 @@ func NewService(db *sql.DB) *Service {
 }
 
 func (s Service) Create(title, text string, storyId int) error {
-	_, err := s.db.Exec("INSERT INTO scenes (title, text, story_id) "+
+	result, err := s.db.Exec("INSERT INTO scenes (title, text, story_id) "+
 		"VALUES($1, $2, $3)", title, text, storyId)
 	if err != nil {
 		return err
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("Scene could not be saved")
 	}
 
 	return nil
@@ -47,7 +52,7 @@ func (s Service) GetById(id int) (gin.H, error) {
 }
 
 func (s Service) GetAll() ([]gin.H, error) {
-	rows, err := s.db.Query("SELECT title, text, story_id FROM scenes")
+	rows, err := s.db.Query("SELECT id, title, text, story_id FROM scenes")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,13 +61,14 @@ func (s Service) GetAll() ([]gin.H, error) {
 	all := make([]gin.H, 0)
 	for rows.Next() {
 		var title, text string
-		var storyId int
-		err = rows.Scan(&title, &text, &storyId)
+		var id, storyId int
+		err = rows.Scan(&id, &title, &text, &storyId)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 
 		all = append(all, gin.H{
+			"id":       id,
 			"title":    title,
 			"text":     text,
 			"story_id": storyId,
@@ -76,16 +82,16 @@ func (s Service) GetAll() ([]gin.H, error) {
 	return all, nil
 }
 
-func (s Service) Update(id int, title, text string, storyId int) error {
-	result, err := s.db.Exec("UPDATE scenes SET title = $2, text = $3, story_id = $4 "+
-		"WHERE id = $1", id, title, text, storyId)
+func (s Service) Update(id int, title, text string) error {
+	result, err := s.db.Exec("UPDATE scenes SET title = $2, text = $3 "+
+		"WHERE id = $1", id, title, text)
 	if err != nil {
 		return err
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return errors.New("No story found with given id: " + strconv.Itoa(id))
+		return errors.New("No scene found with given id: " + strconv.Itoa(id))
 	}
 
 	return nil
@@ -99,7 +105,7 @@ func (s Service) Delete(id int) error {
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return errors.New("No story found with given id: " + strconv.Itoa(id))
+		return errors.New("No scene found with given id: " + strconv.Itoa(id))
 	}
 
 	return nil

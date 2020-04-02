@@ -13,10 +13,10 @@ import (
 var choiceService *Service
 
 type ChoiceDTO struct {
-	Title     string `json:"name"`
-	Text      string `form:"text"`
-	SceneId   int    `json:"scene_id" binding:"required"`
-	NextScene int    `json:"next_scene" binding:"required"`
+	Title       string `json:"title"`
+	Text        string `form:"text"`
+	SceneId     int    `json:"scene_id" binding:"required"`
+	NextSceneId int    `json:"next_scene_id" binding:"required"`
 }
 
 func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
@@ -36,7 +36,10 @@ func createChoice(ctx *gin.Context) {
 		return
 	}
 
-	choiceService.Create(dto.Title, dto.Text, dto.SceneId, dto.NextScene)
+	if err := choiceService.Create(dto.Title, dto.Text, dto.SceneId, dto.NextSceneId); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully created"})
 }
@@ -80,7 +83,7 @@ func updateChoice(ctx *gin.Context) {
 		return
 	}
 
-	if err = choiceService.Update(id, dto.Title, dto.Text, dto.SceneId, dto.NextScene); err != nil {
+	if err = choiceService.Update(id, dto.Title, dto.Text, dto.SceneId, dto.NextSceneId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

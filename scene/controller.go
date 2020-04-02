@@ -13,15 +13,14 @@ import (
 var sceneService *Service
 
 type SceneDTO struct {
-	Title   string `json:"title"`
-	Text    string `form:"text"`
-	StoryId int    `json:"story_id" binding:"required"`
+	Title string `json:"title"`
+	Text  string `form:"text"`
 }
 
 func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 	sceneService = NewService(db)
 
-	rg.POST("/", createScene)
+	rg.POST("/:storyId", createScene)
 	rg.GET("/", getAllScenes)
 	rg.GET("/:id", getScene)
 	rg.PUT("/:id", updateScene)
@@ -29,13 +28,19 @@ func Endpoint(db *sql.DB, rg *gin.RouterGroup) {
 }
 
 func createScene(ctx *gin.Context) {
+	storyId, err := strconv.Atoi(ctx.Param("storyId"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var dto SceneDTO
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	sceneService.Create(dto.Title, dto.Text, dto.StoryId)
+	sceneService.Create(dto.Title, dto.Text, storyId)
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "Successfully created"})
 }
@@ -79,7 +84,7 @@ func updateScene(ctx *gin.Context) {
 		return
 	}
 
-	if err = sceneService.Update(id, dto.Title, dto.Text, dto.StoryId); err != nil {
+	if err = sceneService.Update(id, dto.Title, dto.Text); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

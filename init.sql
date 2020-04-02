@@ -53,7 +53,7 @@ CREATE TABLE choices (
   title varchar,
   text varchar,
   scene_id int,
-  next_scene int
+  next_scene_id int
 );
 
 -- ALTER TABLE "users_to_roles" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
@@ -76,5 +76,5 @@ ALTER TABLE scenes ADD FOREIGN KEY (story_id) REFERENCES stories (id);
 
 ALTER TABLE choices ADD FOREIGN KEY (scene_id) REFERENCES scenes (id);
 
-ALTER TABLE choices ADD FOREIGN KEY (next_scene) REFERENCES scenes (id);
+ALTER TABLE choices ADD FOREIGN KEY (next_scene_id) REFERENCES scenes (id);
 
