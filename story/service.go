@@ -91,6 +91,32 @@ func (s Service) Update(id int, title, description string, authorId int) error {
 	return nil
 }
 
+func (s Service) SetStartScene(id, startSceneId int) error {
+	result, err := s.db.Exec("UPDATE stories SET start_scene_id = $2 "+
+		"WHERE id = $1", id, startSceneId)
+	if err != nil {
+		return err
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return errors.New("No story found with given id: " + strconv.Itoa(id))
+	}
+
+	return nil
+}
+
+func (s Service) GetStartScene(id int) (int, error) {
+	var startSceneId int
+	err := s.db.QueryRow("SELECT start_scene_id FROM stories WHERE id = $1", id).
+		Scan(&startSceneId)
+	if err != nil {
+		return 0, err
+	}
+
+	return startSceneId, nil
+}
+
 func (s Service) Delete(id int) error {
 	result, err := s.db.Exec("DELETE FROM stories WHERE id = $1", id)
 	if err != nil {

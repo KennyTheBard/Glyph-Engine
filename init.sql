@@ -32,7 +32,8 @@ CREATE TABLE stories (
   title varchar,
   description varchar,
   -- "creation_date" date,
-  author_id int
+  author_id int,
+  start_scene_id int,
 );
 
 CREATE TABLE scenes (
@@ -42,11 +43,12 @@ CREATE TABLE scenes (
   story_id int
 );
 
--- CREATE TABLE "user_progress" (
---   "user_id" int,
---   "story_id" int,
---   "scene_id" int
--- );
+CREATE TABLE user_progress (
+  user_id int not null,
+  story_id int not null,
+  scene_id int not null,
+  PRIMARY KEY(user_id, story_id)
+);
 
 CREATE TABLE choices (
   id SERIAL PRIMARY KEY,
@@ -66,13 +68,15 @@ CREATE TABLE choices (
 
 ALTER TABLE stories ADD FOREIGN KEY (author_id) REFERENCES users (id);
 
+ALTER TABLE stories ADD FOREIGN KEY (start_scene_id) REFERENCES scenes (id);
+
 ALTER TABLE scenes ADD FOREIGN KEY (story_id) REFERENCES stories (id);
 
--- ALTER TABLE "user_progress" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE user_progress ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
--- ALTER TABLE "user_progress" ADD FOREIGN KEY ("story_id") REFERENCES "stories" ("id");
+ALTER TABLE user_progress ADD FOREIGN KEY (story_id) REFERENCES stories (id);
 
--- ALTER TABLE "user_progress" ADD FOREIGN KEY ("scene_id") REFERENCES "scenes" ("id");
+ALTER TABLE user_progress ADD FOREIGN KEY (scene_id) REFERENCES scenes (id);
 
 ALTER TABLE choices ADD FOREIGN KEY (scene_id) REFERENCES scenes (id);
 
